@@ -1,0 +1,13 @@
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (max-width: 600px) {
+    .AppIcon{    
+        padding-left: 14% !important;
+    }
+}
+
+.light-blue-skin .side-nav .sidenav-bg::after, .light-blue-skin .side-nav .sidenav-bg.mask-strong::after {
+
+    background: rgba(115, 197, 8, 0.8) !important ;
+
+}

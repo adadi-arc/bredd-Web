@@ -1,0 +1,128 @@
+<div class="row py-4">
+    <div class="col-lg-12 col-md-12">
+        <mdb-card cascade="true" narrower="true">
+            <div class="view view-cascade gradient-card-header  narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center"
+                style="background-color: #506a93 !important;">
+                <h4 class="h4-responsive">Currency Conversion</h4>
+            </div>
+            <mdb-card-body cascade="true">
+                <div class="row" style="padding: 0px 6px;">
+                    <div class="col-md-6">
+                        <mat-form-field class="example-full-width">
+                            <mat-label>Select Year:</mat-label>
+                            <mat-select name="year" required [(ngModel)]="Year" (selectionChange)="onSelection(Year)">
+                                <mat-option *ngFor="let option of years" [value]="option"> {{
+                                    option}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <hr style="color: grey !important;">
+
+                <div class="mt-2" *ngIf="listData != null ">
+                    <!-- <div class="row" >
+               
+                        <form class="col-md-4 example-form elem">
+                            <form class="form-inline md-form active-pink-2 mt-0 mb-0">
+                                <mdb-icon  fas icon="search" aria-hidden="true"
+                                    class="mr-2" style="color: #506a93 !important;"></mdb-icon>
+                                <input class="form-control form-control-sm w-75 TopMenuSearchField" [(ngModel)]="searchKey"
+                                    name="searchKey" type="text" placeholder="Search" aria-label="Search"
+                                    (keyup)="applyFilter()" mdbInput />
+                                <button style="margin: 0px" placement="left" mdbTooltip="Clear" matSuffix
+                                    class="TableSearchCloseBtn" mdbBtn type="button" flat="true" size="md" mdbWavesEffect
+                                    *ngIf="searchKey" (click)="onSearchClick()">
+                                    <mdb-icon fas icon="times" aria-hidden="true"></mdb-icon>
+                                </button>
+                            </form>
+                        </form>
+                  
+                    <div class="col-md-8" style="text-align: right;">
+                       
+                            <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 50, 100]" [pageSize]="pageSize"
+                                showFirstLastButtons>
+                            </mat-paginator>
+                       
+                    </div>
+                    </div>         -->
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12">
+
+                            <mdb-card-body cascade="true">
+                                <!-- <div class="col-md-12 col-sm-12 col-xs-12 IsBigScreen justify-content-center">
+                                    <mat-paginator (page)="syncPrimaryPaginator($event)" [pageSize]="paginator.pageSize"
+                                        [pageIndex]="paginator.pageIndex" [length]="paginator.length"
+                                        [pageSizeOptions]="paginator.pageSizeOptions"
+                                        showFirstLastButtons></mat-paginator>
+                                    <br />
+                                </div> -->
+                                <div class="=row" style="min-height: 67px !important;">
+                                    <div class="mat-elevation-z8 table-responsive difftab">
+                                        <mat-table [dataSource]="listData" matSort>
+                                            <ng-container matColumnDef="Months" >
+                                                <mat-header-cell *matHeaderCellDef
+                                                    mat-sort-header>Months</mat-header-cell>
+                                                <mat-cell *matCellDef="let element" data-label="Months" style="width: 16% !important;">
+                                                    {{ element.Month }}
+                                                </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="Action">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header> Rate</mat-header-cell>
+                                                <mat-cell *matCellDef="let element" data-label="Action" style="width: 36% !important;">
+                                                    <mat-form-field class="example-full-width" style="width: 50%;">
+                                                        <!-- <mat-label> Closed Date:</mat-label> -->
+                                                        <input matInput class="MatInputBoxShadow" type="text"
+                                                            name="Exchange" [(ngModel)]="element.rate"
+                                                            #ExcahngeRate="ngModel"  />
+                                                    </mat-form-field>
+                                                    <!-- <mat-radio-group aria-label="Select an option" [(ngModel)]="element.selected">
+                                                        <mat-radio-button value="true">Yes</mat-radio-button>
+                                                        <mat-radio-button value= "false" style="margin-left: 19px;"  >No</mat-radio-button>
+                                                      </mat-radio-group> -->
+                                                </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="Status">
+                                                <mat-header-cell *matHeaderCellDef
+                                                    mat-sort-header>Status</mat-header-cell>
+                                                <mat-cell *matCellDef="let element" data-label="Status">
+                                                    <!-- {{ element.Status }}   -->
+                                                    <mdb-icon fas icon="check-circle" class="mr-1 text-success"
+                                                        style="font-size: 24px; color: success" *ngIf="element.Status">
+                                                    </mdb-icon>
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+                                        </mat-table>
+                                    </div>
+                                    <app-table-bottom-area [listData]="listData" [search]="searchKey">
+                                    </app-table-bottom-area>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-3">
+                                        <button mdbBtn type="button" class="btn-sm"
+                                            style="background-color: #506a93; color: white;"
+                                            (click)="Submit()"><mdb-icon fas icon="save"
+                                                class="mr-1"></mdb-icon>Submit</button>
+                                    </div>
+
+                                </div>
+                            </mdb-card-body>
+                            <!--/.Card content-->
+
+                            <!--/.Card-->
+                        </div>
+                        <!--Grid column-->
+                    </div>
+
+                </div>
+
+            </mdb-card-body>
+            <!--/.Card content-->
+        </mdb-card>
+        <!--/.Card-->
+    </div>
+    <!--Grid column-->
+</div>

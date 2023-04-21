@@ -1,0 +1,155 @@
+
+
+
+
+
+<div class="row fixed-top my-1 pl-3 pr-3 stickyMenuTop">
+    <div class="btn-group" role="group" aria-label="Basic example">
+     <a class="stickyButtons elem"  data-target="#basicExample">
+        <button mdbBtn type="button" class="btn-sm" (click)="BackButtton()">
+            <mdb-icon fas icon="arrow-left" class="mr-1"></mdb-icon>Back
+        </button>
+      </a> 
+    </div></div>
+
+    <div class="row py-4">
+        <div class="col-lg-12 col-md-12">
+            <mdb-card cascade="true" narrower="true">
+                <div class="view view-cascade gradient-card-header  narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center"
+                    style="background-color: #506a93 !important;">
+                    <h4 class="h4-responsive">Notes</h4>
+                </div>
+                <mdb-card-body cascade="true" >
+                    <!-- <div class="row" style="padding: 0px 6px;">
+                        <div class="col-sm-3">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Jobs Code:</mat-label>
+                                <mat-select required [ngModelOptions]="{ standalone: true }" (selectionChange)="onPhaseSelection(JobCode)"
+                                    [(ngModel)]="JobCode">
+                                    <mat-option *ngFor="let option of JobCodeArr" [value]="option">
+                                        {{ option }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-3">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Phase:</mat-label>
+                                <mat-select required [ngModelOptions]="{ standalone: true }" 
+                                    (selectionChange)="getDiscussion(JobCode , Phase)" [(ngModel)]="Phase">
+                                    <mat-option *ngFor="let option of PhaseArr" [value]="option.JC_PHASECODE">
+                                        {{ option.JC_PHASECODE }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <hr > -->
+                    <!-- <div class="mt-2" *ngIf="Phase != null "> -->
+                        <div class="row" >
+                   
+                            <form class="col-md-4 example-form elem">
+                                <form class="form-inline md-form active-pink-2 mt-0 mb-0">
+                                    <mdb-icon  fas icon="search" aria-hidden="true"
+                                        class="mr-2" style="color: #506a93 !important;"></mdb-icon>
+                                    <input class="form-control form-control-sm w-75 TopMenuSearchField" [(ngModel)]="searchKey"
+                                        name="searchKey" type="text" placeholder="Search" aria-label="Search"
+                                        (keyup)="applyFilter()" mdbInput />
+                                    <button style="margin: 0px" placement="left" mdbTooltip="Clear" matSuffix
+                                        class="TableSearchCloseBtn" mdbBtn type="button" flat="true" size="md" mdbWavesEffect
+                                        *ngIf="searchKey" (click)="onSearchClick()">
+                                        <mdb-icon fas icon="times" aria-hidden="true"></mdb-icon>
+                                    </button>
+                                </form>
+                            </form>
+                      
+                        <div class="col-md-8" style="text-align: right;">
+                           
+                                <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 50, 100]" [pageSize]="pageSize"
+                                    showFirstLastButtons>
+                                </mat-paginator>
+                           
+                        </div>
+                        </div>        
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12">
+    
+                                <mdb-card-body cascade="true">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 IsBigScreen justify-content-center">
+                                        <mat-paginator (page)="syncPrimaryPaginator($event)" [pageSize]="paginator.pageSize"
+                                            [pageIndex]="paginator.pageIndex" [length]="paginator.length"
+                                            [pageSizeOptions]="paginator.pageSizeOptions"
+                                            showFirstLastButtons></mat-paginator>
+                                        <br />
+                                    </div>
+                                    <div class="=row" style="min-height: 67px !important;">
+                                        <div class="mat-elevation-z8 table-responsive difftab">
+                                            <mat-table [dataSource]="listData" matSort>
+    
+                                                <ng-container matColumnDef="Discussion">
+                                                    <mat-header-cell *matHeaderCellDef mat-sort-header>Notes
+                                                    </mat-header-cell>
+    
+                                                    <mat-cell *matCellDef="let element" data-label="Discussion">
+                                                        <small class="mt-2" style="color: #506a93; font-size: 11px;">Created
+                                                            On {{element.Created | date:'MM/dd/yyyy hh:mm aa'}} by
+                                                            {{element.Editor?.Title}}</small>
+                                                        <div [innerHTML]="element.Discussion" class="mt-1">
+    
+                                                        </div>
+                                                        <!-- {{element.Discussion }} -->
+                                                    </mat-cell>
+                                                </ng-container>
+                                                <ng-container matColumnDef="actions" style="    text-align: end;">
+                                                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                                                    <mat-cell *matCellDef="let element" class="TableCommandButtons">
+                                                        <div class="btn-group ">
+                                                            <button class="matIconButtonsCustom-this" mat-button
+                                                                matTooltip="Edit" (click)="EditDilog(element)">
+                                                                <mat-icon class="shadow-Icon-Color">edit</mat-icon>
+                                                            </button>
+    
+                                                        </div>
+                                                        <div class="btn-group ">
+                                                            <button class="matIconButtonsCustom-this" mat-button
+                                                                matTooltip="Delete" (click)="Delete(element)">
+                                                                <mat-icon class="shadow-Icon-Color">delete</mat-icon>
+                                                            </button>
+    
+                                                        </div>
+                                                    </mat-cell>
+                                                </ng-container>
+                                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+                                            </mat-table>
+                                        </div>
+                                        <app-table-bottom-area [listData]="listData" [search]="searchKey">
+                                        </app-table-bottom-area>
+                                    </div>
+                                </mdb-card-body>
+                                <!--/.Card content-->
+    
+                                <!--/.Card-->
+                            </div>
+                            <!--Grid column-->
+                        </div>
+                        <div class="row" >
+                            <div class="col-md-10" [hidden]="AllowComment == 'false'">
+                                <button  mdbBtn type="button" class="btn-sm" style="background-color: #506a93; color: white; cursor: pointer;" 
+                                    (click)="openDialog()"><mdb-icon fas icon="plus" class="mr-1"></mdb-icon>Add</button>
+                            </div>
+                            <!-- <div class="col-md-2 text-right" >
+                                <button  mdbBtn type="button" class="btn-sm" style="background-color: #506a93; color: white; cursor: pointer" 
+                                    (click)="BackButtton()"><mdb-icon fas icon="arrow-left" class="mr-1"></mdb-icon>Back</button>
+                            </div> -->
+    
+                        </div>
+                    <!-- </div> -->
+                  
+                </mdb-card-body>
+                <!--/.Card content-->
+            </mdb-card>
+            <!--/.Card-->
+        </div>
+        <!--Grid column-->
+    </div>

@@ -1,0 +1,165 @@
+import { Component, OnInit } from '@angular/core';
+
+import { CommonService } from 'src/app/Base/Common.service';
+import { SPOperationsService } from 'src/app/services/spoperations.service';
+import { Router } from '@angular/router';
+import { ViewsService } from './views.service';
+import { SharePointConfigService } from 'src/app/Base/SharePoint/share-point-config.service';
+import { ViewMaster } from '../../admin/views/view-master.model';
+import { LoginUser } from 'src/app/Base/User/login-user';
+
+
+@Component({
+  selector: 'app-views',
+  templateUrl: './views.component.html',
+  styleUrls: ['./views.component.scss']
+})
+export class ViewsComponent implements OnInit {
+  /*
+  regionList: any[] = [];
+  categoryList: any[] = [   
+    {
+      "Title": "Recent Contacts",
+      "Url": "",
+      "Region":""
+    }
+    ,
+    {
+      "Title": "My Contacts",
+      "Url": "",
+      "Region":""
+    }
+  ];
+
+  public ContactCatg_C1_Img = "";
+  */
+
+  viewMasterList: ViewMaster[] = [];
+  viewVendorMasterList: ViewMaster[] = [];
+  viewClientMasterList: ViewMaster[] = [];
+
+  constructor(
+    
+    public service: SPOperationsService, 
+    public router: Router, 
+    public common:CommonService,    
+    public spConfigService:SharePointConfigService,
+    ) { }
+
+  ngOnInit(): void {
+
+    
+    this.getViewMasterData();
+  }
+
+  getViewMasterData() {
+    this.common.ShowSpinner();
+
+    var query = {
+      select: "ID, Title, ViewList",
+      filter: "EditorId eq " + LoginUser.loggedinUser.UserID,
+      orderby: "Title asc"
+    }
+
+    this.service.readItems("View Master", query).then(res => {
+      this.viewMasterList = res['d'].results;
+      this.setViewsData();
+      this.common.HideSpinner();
+    })
+
+  }
+
+  setViewsData(){
+      for (let index = 0; index < this.viewMasterList.length; index++) {
+        const element = this.viewMasterList[index];
+        if(element.ViewList == "Vendor List")
+          this.viewVendorMasterList.push(element);
+        else if(element.ViewList == "Client List")
+          this.viewClientMasterList.push(element);
+      }
+  }
+
+  
+  openVendorList(viewID:number){
+    this.router.navigate(['/contact/vendor/list'], { queryParams: { ViewID: viewID , parent: 'VendorViews'} })
+  }
+
+  openClientList(viewID:number){
+    this.router.navigate(['/contact/list'], { queryParams: { ViewID: viewID , parent: 'ClientViews'} })
+  }
+
+  /*
+  openContactList(item:any){    
+    if(item.Title == 'Recent Contacts')
+      this.router.navigate(['/contact/list'], { queryParams: { other: 'Recent', parent: 'views' } })
+    else if(item.Title == 'My Contacts')
+      this.router.navigate(['/contact/list'], { queryParams: { other: 'My', parent: 'views' } })
+    else
+      this.router.navigate(['/contact/list'], { queryParams: { regionID: item.Id, parent: 'views' } })
+  }
+
+  getContactCategoryImages() {
+    this.common.ShowSpinner();
+    if (this.viewsService.Images.length == 0) {
+      
+      this.spConfigService.getRecordByGroupAsync("Views").then(res => {
+        this.viewsService.Images = res;
+        this.setImages();
+        //this.setAllUrls();        
+        this.common.HideSpinner();
+        this.isapploaded = true;
+
+      })
+    }
+    else
+     { 
+       this.setImages();
+       //this.setAllUrls();
+       this.common.HideSpinner();
+       this.isapploaded = true;
+     }
+  }
+
+  async getRegionsData() {
+
+    const query = {
+      select: 'ID, Title',
+      orderby: 'Title asc'
+    };
+
+    await this.service.readItems("Regions", query).then(res => {      
+      this.regionList = res['d'].results;            
+    });
+
+  }
+
+  
+
+  isapploaded:boolean = false;
+
+  setImages() {
+    this.ContactCatg_C1_Img = this.getFiltereddataByTitle("Views_C1_Img", this.viewsService.Images)[0].ListUrl;
+
+  }
+
+  setAllUrls(){
+    this.setUrls('East Coast', 'Views_EastCoast');
+    this.setUrls('West Coast', 'Views_WestCoast');
+    this.setUrls('Midwest', 'Views_Midwest');    
+    this.setUrls('International', 'Views_International');    
+    this.setUrls('Recent Contacts', 'Views_RecentContacts');    
+    this.setUrls('My Contacts', 'Views_MyContacts');    
+  }
+
+  setUrls(title:string, listTile:string){
+     this.categoryList.filter(res=> res.Title == title)[0].Url = this.getFiltereddataByTitle(listTile, this.viewsService.Images)[0].ListUrl
+  }
+
+  getFiltereddataByTitle(Title: string, arr: []): any {
+    return arr.filter(function (x) {
+      return x['Title'] == Title;
+    })
+  }
+  */
+
+}

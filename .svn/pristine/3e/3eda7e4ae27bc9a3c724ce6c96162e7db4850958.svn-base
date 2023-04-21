@@ -1,0 +1,337 @@
+import { Subject } from 'rxjs';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { GenericService } from 'src/app/services/generic.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { CalendarEvent, CalendarEventAction, CalendarDateFormatter, CalendarEventTimesChangedEvent, CalendarView, CalendarMonthViewBeforeRenderEvent } from 'angular-calendar';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { FormControl } from '@angular/forms';
+
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { default as _rollupMoment, Moment } from 'moment';
+import * as _moment from 'moment';
+
+import { MatTableDataSource } from '@angular/material/table';
+import { Table } from 'src/app/Base/Table';
+import { ToastService, MDBModalService, MDBModalRef, ModalDirective } from 'ng-uikit-pro-standard';
+import { CommonService } from '../../../Base/Common.service';
+import { DateTime } from 'luxon';
+import { SPOperationsService } from 'src/app/services/spoperations.service';
+import { Deal } from '../deal.model';
+
+@Component({
+  selector: 'app-dealslist',
+  templateUrl: './dealslist.component.html',
+  styleUrls: ['./dealslist.component.scss']
+
+})
+export class DealslistComponent extends Table implements OnInit {
+  GraphView: boolean = true;
+  ListView: boolean = false;
+  CalendarViewChip: boolean = true;
+
+
+  view: CalendarView = CalendarView.Month;
+  CalendarView = CalendarView;
+  viewDate: Date = new Date();
+  @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
+  public searchInput = false;
+  refresh: Subject<any> = new Subject();
+  DisplayName: string = "";
+  displayedColumns: string[] = ['Deal', 'Market','SubMarket', 'Status', 'Fund', 'Type'];
+  public modalRef: MDBModalRef;
+  selectedChipStatusName = "S";
+  selectedChipViewName = "L";
+  activeDayIsOpen: boolean = true;
+  headingName: string = "";
+  parent: string = "";
+  other: string = "";
+  statusName: string = null;
+  
+  filterby: string = 'S';
+  clickedDate: Date;
+  clickedColumn: number;
+  calendarDate:any []=[]
+  longitude = -87.623177;
+  latitude = 41.881832;
+
+
+
+  selectedChipModule = "Occupancy";
+  selectedChipPeriod = "DoD";
+  FilterDate: Date = new Date();
+
+  ModuleOptions: any[] = [{
+    ID: 1,
+    ModuleName: "Occupancy",
+    ShortCode: "O"
+   },
+   {
+     ID: 2,
+     ModuleName: "Applications",
+     ShortCode: "A"
+    },{
+     ID: 3,
+     ModuleName: "Traffic",
+     ShortCode: "T"
+    },{
+     ID: 4,
+     ModuleName: "Preleasing",
+     ShortCode: "PL"
+    }];
+  markers = [
+  { 
+    latitude: 41.881832, longitude: -87.623177 ,Title: 'Chicago'
+  },
+  { 
+    latitude: 40.7128, longitude: -74.0060 , Title: 'New York'
+  },
+  { 
+    latitude: 27.798244, longitude: -82.798462, Title: 'Florida'
+  },
+  { 
+    latitude: 41.392502, longitude: -81.534447, Title: 'Bedford, OH, the US'
+  },
+  { 
+    latitude: 32.349998, longitude: -95.300003, Title: 'Texas'
+  }
+
+  ];
+  protected _onDestroy = new Subject<void>();
+  modalData: {
+    action: string;
+    event: CalendarEvent;
+  };
+  labelOptions = {
+    color: '#CC0000',
+    
+    }
+  actions: CalendarEventAction[] = [
+    {
+      label: '<i class="fas fa-fw fa-pencil-alt"></i>',
+      a11yLabel: 'Edit',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.handleEvent('Edited', event);
+      },
+    },
+    {
+      label: '<i class="fas fa-fw fa-trash-alt"></i>',
+      a11yLabel: 'Delete',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.events = this.events.filter((iEvent) => iEvent !== event);
+        this.handleEvent('Deleted', event);
+      },
+    },
+  ];
+
+  events: CalendarEvent[];
+  Allevents: CalendarEvent[];
+  handleEvent(action: string, event: CalendarEvent): void {
+    this.modalData = { event, action };
+    this.modal.open(this.modalContent, { size: 'lg' });
+  }
+  constructor(
+    private modal: NgbModal,
+    public service: SPOperationsService,
+    public router: Router,
+    public modalService: MDBModalService,
+    public common: CommonService,
+    public route: ActivatedRoute
+
+  ) {
+    super(router);
+    this.common.hideGlobalSearch = true;
+
+  }
+  navigate(property: any) {
+    this.router.navigate(['/portal/deals/main'], {
+       queryParams: {
+          ID: property.ID
+       }
+    });
+ }
+ onMouseHover(infoWindow, gm, row: any) {
+  if (gm.lastOpen != null) {
+     try {
+        gm.lastOpen.close();
+     } catch (error) {
+        console.log(error);
+     }
+  }
+  gm.lastOpen = infoWindow;
+
+
+  //this.currentID = row.ID;
+
+  infoWindow.open();
+}
+
+onMouseOut(infoWindow, $event: MouseEvent) {
+  infoWindow.close();
+}
+  ngOnInit(): void {
+
+    this.viewDate = new Date();
+
+
+    this.route.queryParams
+      .subscribe(params => {
+        this.statusName = params['status'] || null;
+
+      });
+
+    this.getDealsData();
+
+
+
+
+
+    // if (this.parent == 'views') {
+    //   if(this.region != '')
+    //     this.setheading(this.region);
+    //   else 
+    if (this.other != '') {
+      this.setheading(this.other);
+    }
+
+  }
+
+  ngOnDestroy() {
+    this.common.hideGlobalSearch = false;
+  }
+
+
+
+
+  getDealsData() {
+
+    this.common.ShowSpinner();
+    var filter = "";
+    var orderby = "FullStatus";
+    if (this.statusName == 'All')
+      filter += '';
+    else filter += 'Status eq ' + "'" + this.statusName + "'";
+
+
+    if (this.filterby == 'M')
+      orderby = 'Market';
+    else if (this.filterby == 'T')
+      orderby = 'DealType';
+    const query = {
+      //select: 'CategoryId, ID, Title, LastName, Company0, JobTitle, Address, Email, Contact, Website, Modified, Editor/Title, Category/Title, Author/ID, Region/Title',     
+      select: 'ID, Market,Title, Fund, Manager,Color, Address,TypeName, DealType,Location,SF,PurchsePrice,PSF,MarketingProcess,StabilizedBasis,SBPSF,UntrendYoC,Status,FullStatus,latitude,longitude',// ,Industry/ID, Industry/Title, Specialty/ID, Specialty/Title, State/ID, State/Title',        
+      filter: filter,
+      orderby: orderby
+    };
+
+
+    this.service.readItems("Deals", query).then(res => {
+      this.common.HideSpinner()
+      let items = res['d'].results;
+      var data = this.getUniqueStatus(res['d'].results,this.filterby);
+      this.setData(res['d'].results, data, this.filterby);
+      console.log(data);
+      console.log(res['d'].results);
+      this.listData = new MatTableDataSource(res['d'].results as Deal[]);
+      this.listData.sort = this.sort;
+      this.listData.paginator = this.paginator;
+      this.setMapData(items);
+      // if (this.parent == 'contactcategories') {
+      //   if (this.CategoryID > 0)
+      //     this.setheading(res['d'].results.length > 0 ? res['d'].results[0].Category.Title : ''); //this.headingName  = res['d'].results.length > 0 ? res['d'].results[0].Category.Title : '';
+      // }
+
+    });
+  }
+
+
+  setData(data: any[], UniqueColumns: any[], filter) {
+    for (let index = 0; index < UniqueColumns.length; index++) {
+      const element = UniqueColumns[index];
+      if (filter == 'S')
+        var newIndex = data.findIndex(x => x.FullStatus === element);
+      else if(filter == 'T')
+        var newIndex = data.findIndex(x => x.DealType === element);
+        else 
+        var newIndex = data.findIndex(x => x.Market === element);
+      console.log(newIndex);
+
+      data.splice(newIndex, 0, { Title: element, isGroup: true });
+
+    }
+    console.log(data);
+  }
+  setMapData(data: any) {
+    this.markers = data;
+ }
+
+  getUniqueStatus(data: any[],filter): any[] {
+    if (filter == 'S'){
+      return data.map(item => item.FullStatus)
+      .filter((value, index, self) => self.indexOf(value) === index)
+    }else if(filter == 'T'){
+      return data.map(item => item.DealType)
+      .filter((value, index, self) => self.indexOf(value) === index)
+    }else{
+      return data.map(item => item.Market)
+      .filter((value, index, self) => self.indexOf(value) === index)
+    }
+    
+  }
+  onFilterClear(frame: ModalDirective) {
+
+
+    frame.hide();
+
+  }
+  onFilterClick(frame:ModalDirective) {
+   
+      
+    frame.hide();
+  }
+  setheading(label) {
+    this.headingName = label;
+  }
+
+  onEdit(gen: Deal) {
+    if(gen.ID != undefined)
+    this.router.navigate(['/portal/deals/main'],{ queryParams: { dealID: gen.ID } })
+  }
+
+  onChipStatusClick(symbol) {
+    this.selectedChipStatusName = symbol;
+    this.filterby = symbol;
+    this.getDealsData();
+  }
+
+  onChipViewClick(symbol) {
+    this.selectedChipViewName = symbol;
+    if (symbol == 'G'){
+      this.GraphView = false;
+      this.ListView = true;
+      this.CalendarViewChip = true;
+    }else if (symbol == 'L'){
+      this.GraphView = true;
+      this.ListView = false;
+      this.CalendarViewChip = true;
+    }else if (symbol == 'C'){
+      this.GraphView = true;
+      this.ListView = true;
+      this.CalendarViewChip = false;
+    }
+    
+    
+  }
+
+  onBack() {
+    this.router.navigate(['/home']);
+  }
+  openNewDealList(){
+    this.router.navigate(['/portal/form']);
+  }
+
+
+
+
+}
+

@@ -1,0 +1,140 @@
+
+<div class="row pr-4 pl-4">        
+    <div
+        class="col-lg-12  view view-cascade gradient-card-header blue-gradient narrower py-2 mb-3 d-flex justify-content-between align-items-center"
+        style="    box-shadow: 0 5px 11px 0 rgba(0,0,0,.18), 0 4px 15px 0 rgba(0,0,0,.15);
+        border-radius: .25rem; color:white;">
+        <h4 class="h4-responsive">Views</h4>              
+    </div>
+    
+</div>
+
+<div class="row  ml-3">
+        
+    <div class="col-lg-6">
+                
+        <div class="row viewSection">
+
+            <div class="col-md-12">
+
+                    <div
+                    class="col-lg-12 view view-cascade gradient-card-header light-blue-skin narrower py-2 mb-3 d-flex justify-content-between align-items-center"
+                    style="    box-shadow: 0 5px 11px 0 rgba(0,0,0,.18), 0 4px 15px 0 rgba(0,0,0,.15);
+                    border-radius: .25rem; color:white;" color="info">
+                    <h4 class="h4-responsive subHeading">Vendor</h4>              
+                    </div>
+
+            </div>
+
+            <div class="card-deck col-md-6 mt-3 left-m-2" *ngFor="let es of viewVendorMasterList">    
+                    <mdb-card>
+                    <div class="view overlay waves-light" mdbWavesEffect>                                
+                        <a><div class="mask rgba-white-slight"></div></a>
+                    </div>            
+                    <mdb-card-body>                                                    
+                        <mdb-card-text>                   
+                            <br>
+                            <h6> <strong> {{es.Title}} </strong></h6>
+                        </mdb-card-text>        
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        
+                                <button 
+                                type="button"   
+                                (click)="openVendorList(es.ID)"                      
+                                mdbBtn color="info" mdbWavesEffect
+                                style="width:94%">
+                                <span ><mdb-icon far icon="clone" class="mr-1"></mdb-icon> Open</span>                 
+                                </button>      
+                            </div>                       
+                        </div>                                                                                             
+                    </mdb-card-body>
+                    </mdb-card>            
+            </div>
+                
+        </div>
+
+    </div>
+
+    <div class="col-lg-6">
+                
+            <div class="row viewSection">
+    
+                <div class="col-md-12">
+    
+                        <div
+                        class="col-lg-12 view view-cascade gradient-card-header light-blue-skin narrower py-2 mb-3 d-flex justify-content-between align-items-center"
+                        style="    box-shadow: 0 5px 11px 0 rgba(0,0,0,.18), 0 4px 15px 0 rgba(0,0,0,.15);
+                        border-radius: .25rem; color:white;" color="info">
+                        <h4 class="h4-responsive subHeading">Contact</h4>              
+                        </div>
+    
+                </div>
+    
+                <div class="card-deck col-md-6 mt-3 left-m-2" *ngFor="let es of viewClientMasterList">   
+                        <mdb-card>
+                        <div class="view overlay waves-light" mdbWavesEffect>                                
+                            <a><div class="mask rgba-white-slight"></div></a>
+                        </div>            
+                        <mdb-card-body>                                                    
+                            <mdb-card-text>                   
+                                <br>
+                                <h6> <strong> {{es.Title}} </strong></h6>
+                            </mdb-card-text>        
+                            <br>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            
+                                    <button 
+                                    type="button"   
+                                    (click)="openClientList(es.ID)"                      
+                                    mdbBtn color="info" mdbWavesEffect
+                                    style="width:94%">
+                                    <span ><mdb-icon far icon="clone" class="mr-1"></mdb-icon> Open</span>                 
+                                    </button>      
+                                </div>                       
+                            </div>                                                                                             
+                        </mdb-card-body>
+                        </mdb-card>            
+                </div>
+                    
+            </div>
+    
+    </div>
+
+ 
+</div>
+
+
+
+
+<!-- 
+
+<div class="row  ml-5 " [hidden] = "isapploaded == false">
+    <div class="card-deck col-md-4 mt-4 " *ngFor="let es of regionList">         
+        <div class="view  zoom z-depth-3">
+            <img [src]="ContactCatg_C1_Img" class="img-fluid fadeOut"  alt="smaple image">      
+            <div class="mask flex-center " >
+                <h4 style="color:rgb(82, 80, 80);"><strong>{{es.Title}}</strong></h4>               
+                <button  size="md" mdbBtn type="button" style="margin-top: 10px; background-color:  #1a5d75!important" color="info" rounded="true" mdbWavesEffect
+                (click)="openContactList(es)">
+                View
+                </button> 
+            </div>            
+        </div>                     
+    </div>
+    <div class="card-deck col-md-4 mt-4 " *ngFor="let es of categoryList">         
+            <div class="view  zoom z-depth-3">
+                <img [src]="ContactCatg_C1_Img" class="img-fluid fadeOut"  alt="smaple image">      
+                <div class="mask flex-center " >
+                    <h4 style="color:rgb(82, 80, 80);"><strong>{{es.Title}}</strong></h4>               
+                    <button  size="md" mdbBtn type="button" style="margin-top: 10px; background-color:  #1a5d75!important" color="info" rounded="true" mdbWavesEffect
+                    (click)="openContactList(es)">
+                    View
+                    </button> 
+                </div>            
+            </div>                     
+    </div>
+
+</div> -->

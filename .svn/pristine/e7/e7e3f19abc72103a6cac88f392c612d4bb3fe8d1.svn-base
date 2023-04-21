@@ -1,0 +1,1822 @@
+<!--Accordion wrapper-->
+<div class="row fixed-top my-1 pl-3 pr-3 stickyMenuTop">
+   <div class="btn-group" role="group" aria-label="Basic example">
+
+      <a class="stickyButtons elem" (click)="onBack()">
+         <button mdbBtn type="button" class="btn-sm">
+            <mdb-icon fas icon="angle-left" class="mr-1"></mdb-icon>Back
+         </button>
+      </a>
+
+      <a (click)="onDelete(primaryKey)" class="stickyButtons">
+         <button mdbBtn type="button" class="btn-sm">
+            <mdb-icon fas icon="trash-alt" class="mr-1"></mdb-icon>Delete
+         </button>
+      </a>
+
+      <a (click)="deal.show()" class="stickyButtons">
+         <button mdbBtn type="button" class="btn-sm">
+            <mdb-icon fas icon="trash-alt" class="mr-1"></mdb-icon>Copy Deal
+         </button>
+      </a>
+
+
+
+
+
+      <!-- <div>
+          <div [hidden]="parent == ''" class="btn-group" role="group" aria-label="Basic example">                                       
+            <a (click)="onBack()" mdbBtn    
+               gradient="aqua" size="sm" data-toggle="modal" data-target="#basicExample"  mdbWavesEffect> 
+              <mdb-icon fas icon="angle-left" class="mr-1"></mdb-icon> Back
+            </a>
+          </div>      
+        </div> 
+       -->
+   </div>
+
+
+
+</div>
+<div mdbModal #deal="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog"
+   aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-notify modal-info" role="document">
+      <!--Content-->
+      <div class="modal-content">
+         <!--Header-->
+         <div class="modal-header">
+            <p class="heading lead">Copy Deal</p>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="frame.hide()">
+               <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+         </div>
+
+         <!--Body-->
+         <div class="modal-body">
+            <div class="text-center">
+               <div class="row" style="padding: 0px 1%">
+                  <div class="col-sm-12">
+
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Deal Name:</mat-label>
+                        <input matInput class="MatInputBoxShadow" type="text" id="PropertyName" required
+                           name="PropertyName">
+
+                     </mat-form-field>
+
+                  </div>
+
+
+
+               </div>
+            </div>
+         </div>
+
+         <!--Footer-->
+         <div class="modal-footer justify-content-center">
+
+            <a type="button" mdbBtn color="primary" outline="true" class="waves-effect" mdbWavesEffect
+               (click)="onCopy(deal)">Copy Deal</a>
+         </div>
+      </div>
+      <!--/.Content-->
+   </div>
+</div>
+<div mdbModal #frame="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog"
+   aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-notify modal-info modal-fluid" role="document">
+      <!--Content-->
+      <div class="modal-content">
+         <!--Header-->
+         <div class="modal-header">
+            <p class="heading lead">Edit</p>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="frame.hide()">
+               <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+         </div>
+
+         <!--Body-->
+         <div class="modal-body">
+            <div class="text-center">
+               <div class="row" style="padding: 0px 1%">
+                  <div class="col-sm-12">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Deal:</mat-label>
+                        <input matInput class="MatInputBoxShadow" type="text" id="PropertyName" required
+                           name="PropertyName">
+                        <mat-error>This field is required
+                        </mat-error>
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                     <div class="md-form" [hidden]="true">
+                        <input name="ID" type="text" class="form-control" mdbInput />
+                        <label for="">ID</label>
+                     </div>
+                     <mat-form-field style="    width: 100%;">
+                        <input matInput required [matDatepicker]="StartDatePicker" placeholder="Date Entered" name="StartDate">
+                        <mat-datepicker-toggle matSuffix [for]="StartDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #StartDatePicker></mat-datepicker>
+                     </mat-form-field>
+
+
+                     <mat-form-field class="example-full-width">
+                        <mat-label>State</mat-label>
+                        <mat-select label="Accrual" type="text" name="Type">
+                           <mat-option>-- Clear --</mat-option>
+                           <mat-option [value]="true">AL</mat-option>
+                           <mat-option [value]="false">AK</mat-option>
+                           <mat-option [value]="false">AZ</mat-option>
+                           <mat-option [value]="false">AR</mat-option>
+                           <mat-option [value]="false">CA</mat-option>
+                           <mat-option [value]="false">CO</mat-option>
+                           <mat-option [value]="false">CT</mat-option>
+                           <mat-option [value]="false">DE</mat-option>
+                           <mat-option [value]="false">FL</mat-option>
+                           <mat-option [value]="false">GA</mat-option>
+                           <mat-option [value]="false">HI</mat-option>
+                           <mat-option [value]="false">ID</mat-option>
+                           <mat-option [value]="false">IL</mat-option>
+                           <mat-option [value]="false">IN</mat-option>
+                           <mat-option [value]="false">IA</mat-option>
+                           <mat-option [value]="false">KS</mat-option>
+                           <mat-option [value]="false">KY</mat-option>
+                           <mat-option [value]="false">LA</mat-option>
+                           <mat-option [value]="false">ME</mat-option>
+                           <mat-option [value]="false">MD</mat-option>
+                           <mat-option [value]="false">MA</mat-option>
+                           <mat-option [value]="false">MI</mat-option>
+                           <mat-option [value]="false">MN</mat-option>
+                           <mat-option [value]="false">MS</mat-option>
+                           <mat-option [value]="false">MO</mat-option>
+                           <mat-option [value]="false">MT</mat-option>
+                           <mat-option [value]="false">NE</mat-option>
+                           <mat-option [value]="false">NV</mat-option>
+                           <mat-option [value]="false">NH</mat-option>
+                           <mat-option [value]="false">NJ</mat-option>
+                           <mat-option [value]="false">NM</mat-option>
+                           <mat-option [value]="false">NY</mat-option>
+                           <mat-option [value]="false">NC</mat-option>
+                           <mat-option [value]="false">ND</mat-option>
+                           <mat-option [value]="false">OH</mat-option>
+                           <mat-option [value]="false">OK</mat-option>
+                           <mat-option [value]="false">OR</mat-option>
+                           <mat-option [value]="false">PA</mat-option>
+                           <mat-option [value]="false">RI</mat-option>
+                           <mat-option [value]="false">SC</mat-option>
+                           <mat-option [value]="false">SD</mat-option>
+                           <mat-option [value]="false">TN</mat-option>
+                           <mat-option [value]="false">TX</mat-option>
+                           <mat-option [value]="false">UT</mat-option>
+                           <mat-option [value]="false">VT</mat-option>
+                           <mat-option [value]="false">VA</mat-option>
+                           <mat-option [value]="false">WA</mat-option>
+                           <mat-option [value]="false">WV</mat-option>
+                           <mat-option [value]="false">WI</mat-option>
+                           <mat-option [value]="false">WY</mat-option>
+                        </mat-select>
+                     </mat-form-field>
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Market</mat-label>
+                        <mat-select label="Accrual" type="text" name="Type">
+                           <mat-option>-- Clear --</mat-option>
+                           <mat-option [value]="true">Massachusetts</mat-option>
+                           <mat-option [value]="false">San Francisco / Bay Area</mat-option>
+                           <mat-option [value]="false">San Diego</mat-option>
+                           <mat-option [value]="false">Seattle</mat-option>
+                           <mat-option [value]="false">UK</mat-option>
+                           <mat-option [value]="false">New York</mat-option>
+                           <mat-option [value]="false">North Carolina</mat-option>
+                           <mat-option [value]="false">Other</mat-option>
+                        </mat-select>
+                     </mat-form-field>
+
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Project Type</mat-label>
+                        <mat-select label="Accrual" type="text" name="Type">
+                           <mat-option>-- Clear --</mat-option>
+                           <mat-option [value]="true">Development</mat-option>
+                           <mat-option [value]="false">Redevelopment</mat-option>
+                           <mat-option [value]="false">Conversion </mat-option>
+                           <mat-option [value]="false">Dev / BP IC Request</mat-option>
+                           <mat-option [value]="false">Redev / BP IC Request</mat-option>
+                        </mat-select>
+                     </mat-form-field>
+
+
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Address:</mat-label>
+                        <input matInput class="MatInputBoxShadow" type="text" id="Fund" name="Fund">
+
+                     </mat-form-field>
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Zip Code:</mat-label>
+                        <input matInput class="MatInputBoxShadow" type="text" id="ZipCode" name="ZipCode">
+
+                     </mat-form-field>
+
+
+
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Sub-Market</mat-label>
+                        <mat-select label="Accrual" type="text" name="Type">
+                           <mat-option>-- Clear --</mat-option>
+                           <mat-option [value]="true">Cambridge MA</mat-option>
+                           <mat-option [value]="false">Cambridge UK</mat-option>
+                           <mat-option [value]="false">Boston MA</mat-option>
+                           <mat-option [value]="false">South SF</mat-option>
+                           <mat-option [value]="false">Peninsula</mat-option>
+                           <mat-option [value]="false">Redwood City</mat-option>
+                           <mat-option [value]="false">Sorrento Mesa</mat-option>
+                           <mat-option [value]="false">UTC</mat-option>
+                        </mat-select>
+                     </mat-form-field>
+
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Deal Type</mat-label>
+                        <mat-select label="Accrual" type="text" name="Type">
+                           <mat-option>-- Clear --</mat-option>
+                           <mat-option [value]="true">In-Market / Active</mat-option>
+                           <mat-option [value]="false">Strategic / Off-Market</mat-option>
+                        </mat-select>
+                     </mat-form-field>
+
+
+
+
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>City:</mat-label>
+                        <input matInput class="MatInputBoxShadow" type="text" id="City" name="City">
+
+                     </mat-form-field>
+
+
+
+
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Description:</mat-label>
+                        <input required matInput class="MatInputBoxShadow" type="text" id="Description" name="Description">
+
+                     </mat-form-field>
+                     <mat-form-field class="example-full-width">
+                        <mat-label>BMR Deal Team</mat-label>
+                        <mat-select [multiple]="true" label="Accrual" type="text" name="Type">
+                           <mat-option>-- Clear --</mat-option>
+                           <mat-option [value]="true">Adam Goldblatt</mat-option>
+                              <mat-option [value]="false">David Hsrio</mat-option>
+                              <mat-option [value]="false">Kevin Vu</mat-option>
+                              <mat-option [value]="false">Nareg Gourdikian</mat-option>
+                              <mat-option [value]="false">Ryan Anderson</mat-option>
+                        </mat-select>
+                     </mat-form-field>
+
+                     <mdb-checkbox [checked]="true" style="margin-top: 22px;" name="Inactive">
+                        Report Output
+                     </mdb-checkbox>
+
+
+
+
+                  </div>
+
+
+
+               </div>
+            </div>
+         </div>
+
+         <!--Footer-->
+         <div class="modal-footer justify-content-center">
+
+            <a type="button" mdbBtn color="primary" outline="true" class="waves-effect" mdbWavesEffect
+               (click)="frame.hide()">Update</a>
+         </div>
+      </div>
+      <!--/.Content-->
+   </div>
+</div>
+<div mdbModal #frameInvestment="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog"
+   aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-notify modal-info modal-fluid" role="document">
+      <!--Content-->
+      <div class="modal-content">
+         <!--Header-->
+         
+         <div class="modal-header">
+            <p class="heading lead">Edit</p>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+               (click)="frameInvestment.hide()">
+               <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+         </div>
+
+         <!--Body-->
+         <div class="modal-body">
+            <form #PropertyMaster="ngForm" autocomplete="off">
+            <div class="text-center">
+               <div class="row" style="padding: 0px 1%">
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Fund(s)</mat-label>
+                        <mat-select required label="Accrual" type="text" name="Type">
+                           <mat-option>-- Clear --</mat-option>
+                           <mat-option [value]="true">BPPLS</mat-option>
+                           <mat-option [value]="false">BREP</mat-option>
+                           <mat-option [value]="false">BREIT</mat-option>
+                           <mat-option [value]="false">TBD</mat-option>
+                        </mat-select>
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field style="    width: 100%;">
+                        <input required matInput [matDatepicker]="AnalysisStartDate"
+                           placeholder="Analysis Start Date" name="AnalysisStartDate">
+                        <mat-datepicker-toggle matSuffix [for]="AnalysisStartDate"></mat-datepicker-toggle>
+                        <mat-datepicker #AnalysisStartDate></mat-datepicker>
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+
+                        <mat-form-field style="    width: 100%;">
+                           <input matInput [matDatepicker]="EstCompletionDate" placeholder="Est. Completion Date"
+                              name="EstCompletionDate">
+                           <mat-datepicker-toggle matSuffix [for]="EstCompletionDate"></mat-datepicker-toggle>
+                           <mat-datepicker #EstCompletionDate></mat-datepicker>
+                        </mat-form-field>
+    
+                  </div>
+               </div>
+               <div class="row" style="padding: 0px 1%">
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>In-Place RSF:</mat-label>
+                        <input #InPlaceRSF="ngModel" [(ngModel)]="formData.InPlaceRSF" required matInput #InPlaceRSF="ngModel"
+                           class="MatInputBoxShadow" type="text" appMatInputCurrency id="InPlaceRSF"
+                           name="InPlaceRSF">
+                        <span matPrefix style="color:#757575">$&nbsp;</span>
+
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Purchase Price:</mat-label>
+                        <input [disabled]="formData.InPlaceRSF == null" (change)="calculate(PurchasePrice)" appMatInputCurrency matInput class="MatInputBoxShadow"  name="PurchasePrice" #PurchasePrice="ngModel"
+                        [(ngModel)]="formData.PurchasePrice" type="text">
+                        <span matPrefix style="color:#757575">$&nbsp;</span>
+
+                     </mat-form-field>
+
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Purchase Price PSF:</mat-label>
+                        <input [disabled]="formData.InPlaceRSF == null" (change)="calculate(PurchasePricePSF)" appMatInputCurrency matInput class="MatInputBoxShadow"  name="PurchasePricePSF" #PurchasePricePSF="ngModel"
+                        [(ngModel)]="formData.PurchasePricePSF" type="text">
+                        <span matPrefix style="color:#757575">$&nbsp;</span>
+
+                     </mat-form-field>
+
+                  </div>
+               </div>
+               <div class="row" style="padding: 0px 1%">
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Stabilized RSF:</mat-label>
+                        <input #StabilizedRSF="ngModel" [(ngModel)]="formData.StabilizedRSF" matInput class="MatInputBoxShadow" type="text" appMatInputCurrency id="StabilizedRSF" 
+                           name="StabilizedRSF">
+                        <span matPrefix style="color:#757575">$&nbsp;</span>
+
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Stabilized Basis:</mat-label>
+                        <input [disabled]="formData.StabilizedRSF == null" #StabilizedBasis="ngModel" [(ngModel)]="formData.StabilizedBasis" 
+                           (change)="calculateStabilized(StabilizedBasis)" matInput class="MatInputBoxShadow"
+                           type="text" appMatInputCurrency id="StabilizedBasis" name="StabilizedBasis">
+                        <span matPrefix style="color:#757575">$&nbsp;</span>
+
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Stabilized Basis PSF:</mat-label>
+                        <input (change)="calculateStabilized(StabilizedBasisPSF)" [disabled]="formData.StabilizedRSF == null" #StabilizedBasisPSF="ngModel" [(ngModel)]="formData.StabilizedBasisPSF" 
+                           matInput class="MatInputBoxShadow" type="text" appMatInputCurrency id="StabilizedBasisPSF" 
+                           name="StabilizedBasisPSF">
+                        <span matPrefix style="color:#757575">$&nbsp;</span>
+
+                     </mat-form-field>
+                  </div>
+               </div>
+               <div class="row" style="padding: 0px 1%">
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Untrended YoC:</mat-label>
+                        <input matInput class="MatInputBoxShadow" type="text" id="Attendance"
+                           name="Amount">
+                        <span matPrefix style="color:#757575">$&nbsp;</span>
+
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Lab Market Rent $PSF (Ann.):</mat-label>
+                        <input 
+                           #LabMarketRentAnn="ngModel" 
+                        [(ngModel)]="formData.LabMarketRentAnn"
+                           (change)="calculatelabmarket()" 
+                           matInput 
+                           class="MatInputBoxShadow" 
+                           type="text" 
+                           appMatInputCurrency 
+                           id="LabMarketRentAnn" 
+                           name="LabMarketRentAnn">
+                        <span matPrefix style="color:#757575">$&nbsp;</span> 
+
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field [disabled]="true" class="example-full-width">
+                        <mat-label>Lab Market Rent $PSF (Mo.):</mat-label>
+                        <input #LabMarketRentMon="ngModel" [(ngModel)]="formData.LabMarketRentMon"  matInput
+                           class="MatInputBoxShadow" type="text" appMatInputCurrency id="LabMarketRentMon"
+                           name="LabMarketRentMon">
+                        <span matPrefix style="color:#757575">$&nbsp;</span>
+
+                     </mat-form-field>
+                  </div>
+               </div>
+               <div class="row" style="padding: 0px 1%">
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Hard Costs PSF:</mat-label>
+                        <input matInput class="MatInputBoxShadow" type="number" appMatInputCurrency id="Attendance"
+                           name="Amount">
+                        <span matPrefix style="color:#757575">$&nbsp;</span>
+
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Tenant Improvements $PSF:</mat-label>
+                        <input matInput class="MatInputBoxShadow" type="number" appMatInputCurrency id="Attendance"
+                           name="Amount">
+                        <span matPrefix style="color:#757575">$&nbsp;</span>
+
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Conversion Cost PSF:</mat-label>
+                        <input matInput class="MatInputBoxShadow" type="number" appMatInputCurrency id="Attendance"
+                           name="Amount">
+                        <span matPrefix style="color:#757575">$&nbsp;</span>
+   
+                     </mat-form-field>
+                  </div>
+               </div>
+
+            </div>
+         </form>
+         </div>
+
+         <!--Footer-->
+         <div class="modal-footer justify-content-center">
+
+            <a type="button" mdbBtn color="primary" outline="true" class="waves-effect" mdbWavesEffect
+               (click)="frame.hide()">Update</a>
+         </div>
+   
+      </div>
+      <!--/.Content-->
+   </div>
+</div>
+<div mdbModal #frameKeyCheck="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog"
+   aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-notify modal-info modal-lg" role="document">
+      <!--Content-->
+      <div class="modal-content">
+         <!--Header-->
+         <div class="modal-header">
+            <p class="heading lead">Edit</p>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+               (click)="frameKeyCheck.hide()">
+               <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+         </div>
+
+         <!--Body-->
+         <div class="modal-body">
+            <div class="text-center">
+               <div class="row" style="padding: 8px 1%">
+                  <div class="col-sm-12">
+         
+                     <table mdbTable class="z-depth-1">
+                        <thead>
+                           <tr>
+                              <th [hidden]="true">ID</th>
+                              <!-- <th>Code</th> -->
+                              <th>Key Upcoming Date(s)</th>
+                              <th>Description </th>
+                              <th></th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr *ngFor="let field of repeating; let i = index;">
+                              <td [hidden]="true"></td>
+                              <td data-label="Key Upcoming Date(s)">
+                                 <input type="date" class="form-control" />
+                              </td>
+                              <td data-label="Description ">
+                                 <mat-form-field appearance="outline" class="matTableFields">
+                                    <input matInput type="text">
+                                 </mat-form-field>
+                              </td>
+                              <td>
+                                 <a (click)="DeleteRow(i)" class="matTableButtons" [hidden]="isView"  mdbTooltip="Delete"
+                                    placement="left" mdbBtn floating="true" size="sm"  gradient="aqua"  mdbWavesEffect>
+                                    <mdb-icon fas icon="trash-alt"></mdb-icon>
+                                 </a>
+                              </td>
+                           </tr> 
+                           <tr>
+         
+                            <td style="text-align: left;">
+                       
+                                    <a (click)="AddRow()" *ngIf="common.CheckIfUserhasAccess_Action('Deposit Schedule','Add')"
+                                       class="matTableButtons" [hidden]="isView" mdbBtn floating="true" mdbTooltip="Add Row"
+                                       placement="left"   size="sm"  gradient="aqua"  mdbWavesEffect>
+                                       <mdb-icon fas icon="plus"></mdb-icon>
+                                    </a>
+                   
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
+         
+         
+         
+                  </div>
+   
+               </div>
+
+
+            </div>
+         </div>
+
+         <!--Footer-->
+         <div class="modal-footer justify-content-center">
+
+            <a type="button" mdbBtn color="primary" outline="true" class="waves-effect" mdbWavesEffect
+               (click)="frame.hide()">Update</a>
+         </div>
+      </div>
+      <!--/.Content-->
+   </div>
+</div>
+<div mdbModal #frameDealDetails="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog"
+   aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-notify modal-info modal-lg" role="document">
+      <!--Content-->
+      <div class="modal-content">
+         <!--Header-->
+         <div class="modal-header">
+            <p class="heading lead">Edit</p>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+               (click)="frameDealDetails.hide()">
+               <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+         </div>
+
+         <!--Body-->
+         <div class="modal-body">
+            <div class="text-center">
+               <div class="row" style="padding: 0px 1%">
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Status</mat-label>
+                        <mat-select label="Accrual" type="text" name="Type">
+                           <mat-option>-- Clear --</mat-option>
+                           <mat-option [value]="true">Development</mat-option>
+                           <mat-option [value]="false">Redevelopment</mat-option>
+                           <mat-option [value]="false">Conversion </mat-option>
+                           <mat-option [value]="false">Dev / BP IC Request</mat-option>
+                           <mat-option [value]="false">Redev / BP IC Request</mat-option>
+                        </mat-select>
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Brokerage</mat-label>
+                        <mat-select [multiple]="true" label="Accrual" type="text" name="Type">
+                           <mat-option>-- Clear --</mat-option>
+                           <mat-option [value]="true">CBRE</mat-option>
+                           <mat-option [value]="false">Newmark</mat-option>
+                           <mat-option [value]="false">Kidder Mathews </mat-option>
+                           <mat-option [value]="false">Cushman & Wakefield</mat-option>
+                           <mat-option [value]="false">JLL</mat-option>
+                        </mat-select>
+                     </mat-form-field>
+                  </div>
+                  <div class="col-sm-4">
+                     <mat-form-field class="example-full-width">
+                        <mat-label>Broker(s)</mat-label>
+                        <mat-select [multiple]="true" label="Accrual" type="text" name="Type">
+                           <mat-option>-- Clear --</mat-option>
+                           <mat-option [value]="true">Brian Russell</mat-option>
+                           <mat-option [value]="false">Nick Psyllos</mat-option>
+                           <mat-option [value]="false">Sach Kirpalani </mat-option>
+                           <mat-option [value]="false">Brunson Howard</mat-option>
+                           <mat-option [value]="false">Bob Prendergast</mat-option>
+                        </mat-select>
+                     </mat-form-field>
+                  </div>
+               </div>
+               <div class="row" style="padding: 0px 1%">
+                  <div class="col-sm-6">
+                     
+            <table mdbTable class="z-depth-1">
+               <thead>
+                  <tr>
+                     <th [hidden]="true">ID</th>
+                     <!-- <th>Code</th> -->
+                     <th style="    text-align: left;">Seller Name</th>
+                     <th></th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr *ngFor="let field of Sellerrepeating; let i = index;">
+                     <td [hidden]="true"></td>
+
+
+                     <td style="text-align: left;" data-label="Seller Name">
+                        <mat-form-field appearance="outline" class="matTableFields">
+                           <input matInput type="text">
+
+                        </mat-form-field>
+                     </td>
+
+
+                     <td style="text-align: left;">
+                        <a (click)="DeleteRowSeller(i)" class="matTableButtons" [hidden]="isView"  mdbTooltip="Delete"
+                           placement="left" mdbBtn floating="true" size="sm"  gradient="aqua"  mdbWavesEffect>
+                           <mdb-icon fas icon="trash-alt"></mdb-icon>
+                        </a>
+                     </td>
+                  </tr> 
+                  <tr>
+
+                     <td style="text-align: left;" colspan="4">
+                        <div class="col-md-12">
+                           <a *ngIf="common.CheckIfUserhasAccess_Action('Deposit Schedule','Add')"
+                              (click)="AddSellerRow()" class="matTableButtons" [hidden]="isView" mdbBtn floating="true"
+                              mdbTooltip="Add Row" placement="right"   size="sm"  gradient="aqua"  mdbWavesEffect>
+                              <mdb-icon fas icon="plus"></mdb-icon>
+                           </a>
+                        </div>
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+                  </div>
+
+               </div>
+
+            </div>
+         </div>
+
+         <!--Footer-->
+         <div class="modal-footer justify-content-center">
+
+            <a type="button" mdbBtn color="primary" outline="true" class="waves-effect" mdbWavesEffect
+               (click)="frameDealDetails.hide()">Update</a>
+         </div>
+      </div>
+      <!--/.Content-->
+   </div>
+</div>
+<div mdbModal #frameQuickLink="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog"
+   aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-notify modal-info modal-lg" role="document">
+      <!--Content-->
+      <div class="modal-content">
+         <!--Header-->
+         <div class="modal-header">
+            <p class="heading lead">Edit</p>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+               (click)="frameQuickLink.hide()">
+               <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+         </div>
+
+         <!--Body-->
+         <div class="modal-body">
+            <div class="text-center">
+
+               <div class="row" style="padding: 0px 1%">
+                  <div style="text-align: left;" class="col-sm-12">
+                     <h5 class="h4-responsive">Quick Links</h5>
+                  </div>
+         
+                  <div class="col-sm-12">
+         
+                     <table mdbTable class="z-depth-1">
+                        <thead>
+                           <tr>
+                              <th [hidden]="true">ID</th>
+                              <!-- <th>Code</th> -->
+                              <th style="text-align: left;">Title</th>
+                              <th style="text-align: left;">URL</th>
+                              <th></th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr *ngFor="let field of QuickLinks; let i = index;">
+                              <td [hidden]="true"></td>
+                              <td data-label="Title">
+                                 <input type="text" class="form-control" />
+                              </td>
+                              <td data-label="URL">
+                                 <mat-form-field appearance="outline" class="matTableFields">
+                                    <input matInput type="text">
+                                 </mat-form-field>
+                              </td>
+                              <td>
+                                 <a (click)="DeleteRowQuickLinks(i)" class="matTableButtons" [hidden]="isView"
+                                     mdbTooltip="Delete" placement="left" mdbBtn floating="true" size="sm"  gradient="aqua"
+                                     mdbWavesEffect>
+                                    <mdb-icon fas icon="trash-alt"></mdb-icon>
+                                 </a>
+                              </td>
+                           </tr> 
+                           <tr>
+         
+                              <td style="text-align: left;" colspan="4">
+                                 <div class="col-md-12">
+                                    <a (click)="QuickLinksAddRow()"
+                                       *ngIf="common.CheckIfUserhasAccess_Action('Deposit Schedule','Add')"
+                                       class="matTableButtons" [hidden]="isView" mdbBtn floating="true" mdbTooltip="Add Row"
+                                       placement="right"   size="sm"  gradient="aqua"  mdbWavesEffect>
+                                       <mdb-icon fas icon="plus"></mdb-icon>
+                                    </a>
+                                 </div>
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
+         
+         
+         
+                  </div>
+         
+               </div>
+
+            </div>
+         </div>
+
+         <!--Footer-->
+         <div class="modal-footer justify-content-center">
+
+            <a type="button" mdbBtn color="primary" outline="true" class="waves-effect" mdbWavesEffect
+               (click)="frameQuickLink.hide()">Update</a>
+         </div>
+      </div>
+      <!--/.Content-->
+   </div>
+</div>
+<mdb-accordion [multiple]="false" aria-multiselectable="true" style="WIDTH: 100%;">
+   <mdb-accordion-item [collapsed]="true" *ngFor="let item of itemsList">
+      <mdb-accordion-item-head> {{ item.Title }} </mdb-accordion-item-head>
+      <mdb-accordion-item-body> 220 6th Avenue North, Seattle, WA 98109 US </mdb-accordion-item-body>
+   </mdb-accordion-item>
+</mdb-accordion>
+<!-- Nav tabs -->
+<mdb-tabset *ngFor="let item of itemsList" #staticTabs [buttonClass]="'md-tabs tabs-primary tabs-3'" [justified]="true"
+   [contentClass]="'card'">
+   <!--Panel 1-->
+   <mdb-tab heading="Deal Overview">
+      <div class="row">
+         <div class="col-12">
+            <mdb-card class="card-height text-white m-2">
+               <mdb-card-header class="light-blue-skin navbar">
+                  <h5 class="h4-responsive">Main Info</h5>
+                  <mdb-icon data-toggle="modal" data-target="#basicExample" (click)="frame.show()" far icon="edit">
+                  </mdb-icon>
+
+               </mdb-card-header>
+               <mdb-card-body>
+                  <div class="row">
+                     <div class="col-sm-4">
+                        <ul class="list-group list-group-flush striped-list">
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Deal</label>
+                              <span>{{ item.Title }}</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Deal Date</label>
+                              <span>6/30/2021</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Market</label>
+                              <span>Sandiego</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Sub-Market</label>
+                              <span>South SF</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Report Output</label>
+                              <span>Yes</span>
+                           </li>
+                        </ul>
+                     </div>
+                     <div class="col-sm-4">
+                        <ul class="list-group list-group-flush striped-list">
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Address</label>
+                              <span>225 West Wacker Drive Suite 3000</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>City</label>
+                              <span>Chicago</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>State</label>
+                              <span>IL</span>
+                           </li>
+
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Zip Code</label>
+                              <span>60606</span>
+                           </li>
+
+                        </ul>
+                     </div>
+                     <div class="col-sm-4">
+                        <ul class="list-group list-group-flush striped-list">
+
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Description</label>
+                              <span>No Description</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Project Type</label>
+                              <span>Development</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Deal Type</label>
+                              <span> In-Market / Active</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>BMR Deal Team</label>
+                              <span>Adam Goldblatt</span>
+                           </li>
+                        </ul>
+                     </div>
+                  </div>
+
+               </mdb-card-body>
+            </mdb-card>
+         </div>
+
+
+      </div>
+      <div class="row">
+         <div class="col-12">
+            <mdb-card class="card-height text-white m-2">
+               <mdb-card-header class="light-blue-skin navbar">
+                  <h5 class="h4-responsive">Investment Summary</h5>
+                  <mdb-icon data-toggle="modal" data-target="#basicExample" (click)="frameInvestment.show()" far
+                     icon="edit">
+                  </mdb-icon>
+
+               </mdb-card-header>
+               <mdb-card-body>
+                  <div class="row">
+                     <div class="col-sm-4">
+                        <ul class="list-group list-group-flush striped-list">
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Fund(s)</label>
+                              <span>BREP</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>In-Place RSF</label>
+                              <span>$1000</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Stabilized Basis</label>
+                              <span>$225</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Untrended YoC</label>
+                              <span>$1500</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Hard Costs PSF</label>
+                              <span>$1800</span>
+                           </li>
+
+
+                        </ul>
+                     </div>
+                     <div class="col-sm-4">
+                        <ul class="list-group list-group-flush striped-list">
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Analysis Start Date</label>
+                              <span>06/11/2020</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Purchase Price</label>
+                              <span>$600</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Stabilized RSF</label>
+                              <span>$1120</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Lab Market Rent $PSF (Ann.)</label>
+                              <span>$60000</span>
+                           </li>
+
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Tenant Improvements $PSF</label>
+                              <span>$2000</span>
+                           </li>
+
+                        </ul>
+                     </div>
+                     <div class="col-sm-4">
+                        <ul class="list-group list-group-flush striped-list">
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Est. Completion Date</label>
+                              <span>09/11/2020</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Purchase Price PSF</label>
+                              <span>$680</span>
+                           </li>
+
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Stabilized Basis PSF</label>
+                              <span>$1280</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Lab Market Rent $PSF (Mo.)</label>
+                              <span>$5000</span>
+                           </li>
+
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Conversion Cost PSF</label>
+                              <span>$2000</span>
+                           </li>
+
+                        </ul>
+                     </div>
+                  </div>
+
+               </mdb-card-body>
+            </mdb-card>
+         </div>
+
+
+      </div>
+
+      <!-- <div class="row">
+         <div class="col-4">
+            <mdb-card class="card-height text-white m-2">
+               <mdb-card-header class="light-blue-skin navbar">
+                  <h5 class="h4-responsive">Main Info</h5>
+                  <mdb-icon data-toggle="modal" data-target="#basicExample" (click)="frame.show()" far icon="edit"></mdb-icon>
+
+               </mdb-card-header>
+               <mdb-card-body *ngFor="let item of itemsList">
+                  <mdb-card-text>
+                     <ul class="list-group list-group-flush striped-list">
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Deal</label>
+                           <span>Development</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Deal Date</label>
+                           <span>6/30/2021</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Market</label>
+                           <span>Sandiego</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Sub-Market</label>
+                           <span>South SF</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Country</label>
+                           <span>United States</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Seller</label>
+                           <span>ABC Company</span>
+                        </li>
+                     </ul>
+                  </mdb-card-text>
+               </mdb-card-body>
+            </mdb-card>
+         </div>
+         <div class="col-4">
+            <mdb-card class="card-height text-white m-2">
+               <mdb-card-header class="light-blue-skin navbar">
+                  <h5 class="h5-responsive">Investment Summary</h5>
+                  <mdb-icon data-toggle="modal" data-target="#basicExample" (click)="frame.show()" far icon="edit"></mdb-icon>
+                     
+               </mdb-card-header>
+               <mdb-card-body *ngFor="let item of itemsList">
+                  <mdb-card-text>
+                     <ul class="list-group list-group-flush striped-list">
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Property Stage</label>
+                           <span></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Fund</label>
+                           <span>{{ item.Fund }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Parent Investment Deal Name</label>
+                           <span></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Investment</label>
+                           <span>$999</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Acquisition Date</label>
+                           <span>6/30/2021</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Disposition Date</label>
+                           <span>4/30/2021</span>
+                        </li>
+                     </ul>
+                  </mdb-card-text>
+               </mdb-card-body>
+            </mdb-card>
+         </div>
+         <div class="col-4">
+            <mdb-card class="card-height text-white m-2">
+               <mdb-card-header class="light-blue-skin navbar">
+                  <h5 class="h4-responsive">Basic Summary</h5>
+                  <mdb-icon data-toggle="modal" data-target="#basicExample" (click)="frame.show()" far icon="edit"></mdb-icon>
+                     
+                   
+               </mdb-card-header>
+               <mdb-card-body>
+                  <mdb-card-text>
+                     <ul class="list-group list-group-flush striped-list">
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>% Total Portfolio</label>
+                           <span>58%</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>All-In Basis (LCY)</label>
+                           <span></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Occupancy (Year 1)</label>
+                           <span>98%</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Occupancy (In-Place)</label>
+                           <span>99%</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>Cap Rate (Year 1)</label>
+                           <span>$999</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                           <label>% Office</label>
+                           <span>66%</span>
+                        </li>
+                     </ul>
+                  </mdb-card-text>
+               </mdb-card-body>
+            </mdb-card>
+         </div>
+
+      </div> -->
+      <div class="row">
+         <div class="col-6">
+            <mdb-card class="card-height text-white m-2" style="height: 90%;">
+               <mdb-card-header class="light-blue-skin navbar">
+                  <h5 class="h5-responsive">Deal Details</h5>
+                  <mdb-icon data-toggle="modal" data-target="#basicExample" (click)="frameDealDetails.show()" far icon="edit">
+                  </mdb-icon>
+               </mdb-card-header>
+               <mdb-card-body>
+                  <div class="row">
+                     <div class="col-sm-12">
+
+                        <ul class="list-group list-group-flush striped-list">
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Brokerage</label>
+                              <span>Eastdil, JLL</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Broker</label>
+                              <span>Gregg Domanico, Sach Kirpalani</span>
+                           </li>
+
+
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Status</label>
+                              <span style="color: #5e7add !important;
+                        font-weight: 900;">Active - Development BPA / Capital Request</span>
+                           </li>
+                           <li class="list-group-item d-flex justify-content-between">
+                              <label>Seller</label>
+                              <span>Joseph, Burns</span>
+                           </li>
+
+                        </ul>
+                     </div>
+                  </div>
+               </mdb-card-body>
+            </mdb-card>
+         </div>
+
+         <div class="col-6">
+            <mdb-card class="card-height text-white m-2" style="height: 90%;">
+               <mdb-card-header class="light-blue-skin navbar">
+                  <h5 class="h5-responsive">Key Upcoming Date(s)</h5>
+                  <mdb-icon data-toggle="modal" data-target="#basicExample" (click)="frameKeyCheck.show()" far icon="edit">
+                  </mdb-icon>
+               </mdb-card-header>
+               <mdb-card-body>
+                  <div class="row">
+                     <div class="col-sm-12" style="border-bottom: 1px solid rgba(0,0,0,.125);">
+                        <div class="NotesAuditInfo">
+                           05/09/2020
+                        </div>
+                        <!-- <div style="white-space: pre-wrap; padding-bottom: 15px;" [innerHTML]="element.Notes"></div> -->
+                        <div style="color:#747373">Lorem ipsum</div>
+                     </div>
+                     <div class="col-sm-12" style="border-bottom: 1px solid rgba(0,0,0,.125);">
+                        <div class="NotesAuditInfo">
+                           08/09/2020
+                        </div>
+                        <!-- <div style="white-space: pre-wrap; padding-bottom: 15px;" [innerHTML]="element.Notes"></div> -->
+                        <div style="color:#747373">Lorem ipsum</div>
+                     </div>
+                  </div>
+               </mdb-card-body>
+            </mdb-card>
+            <!-- Material unchecked disabled -->
+
+
+         </div>
+
+
+
+      </div>
+
+
+      <div class="row">
+         <div class="col-4">
+            <mdb-card class="card-height text-white m-2" style="height: 90%;">
+               <mdb-card-header class="light-blue-skin navbar">
+                  <h5 class="h5-responsive">Photos</h5>
+
+               </mdb-card-header>
+               <mdb-card-body>
+                  <mdb-card-text>
+                     <mdb-image-modal [modalImages]="images" type="margin"></mdb-image-modal>
+                  </mdb-card-text>
+               </mdb-card-body>
+            </mdb-card>
+         </div>
+         <div class="col-8">
+            <mdb-card class="card-height text-white m-2">
+               <mdb-card-header class="light-blue-skin navbar">
+                  <h5 class="h5-responsive">Location</h5>
+    
+               </mdb-card-header>
+               <mdb-card-body>
+                  <mdb-card-text>
+                     <agm-map [latitude]="latitude" [longitude]="longitude" style="height: 300px"
+                        (mapClick)="placeMarker($event)">
+                        <agm-marker *ngFor="let marker of markers" [latitude]="marker.latitude"
+                           [longitude]="marker.longitude"></agm-marker>
+                     </agm-map>
+                  </mdb-card-text>
+               </mdb-card-body>
+            </mdb-card>
+         </div>
+      </div>
+   </mdb-tab>
+   <!--Panel 2-->
+
+   <!-- <mdb-tab heading="Deal Flow">
+      <div class="row">
+         <div class="col-12">
+
+            <mat-horizontal-stepper [linear]="isLinear" #stepper>
+               <mat-step [stepControl]="firstFormGroup">
+                  <form [formGroup]="firstFormGroup">
+                     <ng-template matStepLabel>Intro</ng-template>
+                     <mdb-tabset [buttonClass]="'classic-tabs tabs-cyan custom-class'" [contentClass]="'card'" class="classic-tabs">
+
+                        <mdb-tab [buttonClass]="'classic-tabs tabs-cyan'" 
+                        [contentClass]="'card'" class="my-tabs classic-tabs" heading="Documents">
+
+                           <br>
+
+                                <div class="row">
+                                  <div class="col-md-6">
+                                      <h6 style="color: gray;">Proposal</h6>
+                                  </div>
+                          
+                                  <div class="col-md-6">
+
+                                      <input  mat-raised-button type="file"  matTooltip="Attachment"                      
+                                        style="float: right;"
+                                        value="Upload">
+                                  </div>
+                          
+                                </div>
+                                <br>
+                                <div class="row">
+                                  <div class="col-12">                             
+                                    <table class="table  table-striped table-hover font-size">
+                   
+                                       <thead class="thead-light">
+                                         <tr>
+                                           <th>Document</th>
+                                           <th>Stage</th>
+                                           <th>Modified</th>
+                                           
+                                         </tr>
+                                       </thead>
+                                       <tbody>
+                                          <tr >
+                                             <td> <a href="" target="_blank">Proposal.docx</a></td>
+                                             <td> <a href="" target="_blank">First Stage</a></td>
+                                             <td>08/03/2021 06:21:42</td>
+                                           </tr>
+                                           <tr >
+                                             <td> <a href="" target="_blank">NDA Contract.docx</a></td>
+                                             <td> <a href="" target="_blank">First Stage</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                           <tr >
+                                             <td> <a href="" target="_blank">Final NDA Contract.docx</a></td>
+                                             <td> <a href="" target="_blank">First Stage</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                       </tbody>
+                                     </table>
+                          
+                                  </div>
+                                </div>
+
+
+                        </mdb-tab>
+
+                         <mdb-tab heading="Notes" class="tabFormat">
+
+                           <br>
+                           <app-vendor-notes-list [input_vendorNotesList]="vendorNotesList3" [ifAddButton]="true"
+                              [vendorID]="primaryKey" [dealID]="primaryKey" [Category]="'3'"
+                              (addNoteEvent)="onNotesAdded($event)">
+                           </app-vendor-notes-list>
+
+                        </mdb-tab>
+
+                        <mdb-tab heading="Status" class="tabFormat">
+                           <br>
+                              <mdb-checkbox [checked]="true">Completed</mdb-checkbox>
+
+
+                        </mdb-tab>
+                       
+                     </mdb-tabset>
+                     
+
+                  </form>
+               </mat-step>
+               <mat-step [stepControl]="secondFormGroup">
+                  <form [formGroup]="secondFormGroup">
+                     <ng-template matStepLabel>Underwriting Review</ng-template>
+                     <mdb-tabset [buttonClass]="'classic-tabs tabs-cyan'" [contentClass]="'card'" class="classic-tabs">
+
+                        <mdb-tab heading="Documents">
+
+                           <br>
+
+                                <div class="row">
+                                  <div class="col-md-6">
+                                      <h6 style="color: gray;">NDA Contract</h6>
+                                  </div>
+                          
+                                  <div class="col-md-6">
+
+                                      <input  mat-raised-button type="file"  matTooltip="Attachment"                      
+                                        style="float: right;"
+                                        value="Upload">
+                                  </div>
+                          
+                                </div>
+                                <br>
+                                <div class="row">
+                                  <div class="col-12">                             
+                                    <table class="table  table-striped table-hover font-size">
+                   
+                                       <thead class="thead-light">
+                                         <tr>
+                                           <th>Document</th>
+                                           <th>Stage</th>
+                                           <th>Modified</th>
+                                           
+                                         </tr>
+                                       </thead>
+                                       <tbody>
+                                          <tr >
+                                             <td> <a href="" target="_blank">Property Info.xlsx</a></td>
+                                             <td> <a href="" target="_blank">Underwriting Review</a></td>
+                                             <td>08/03/2021 06:21:42</td>
+                                           </tr>
+                                           <tr >
+                                             <td> <a href="" target="_blank">Investment Info.xlsx</a></td>
+                                             <td> <a href="" target="_blank">Underwriting Review</a></td>
+                                             <td>08/03/2021 06:21:42</td>
+                                           </tr>
+                                           <tr >
+                                             <td> <a href="" target="_blank">Exhibits.docx</a></td>
+                                             <td> <a href="" target="_blank">Underwriting Review</a></td>
+                                             <td>08/03/2021 06:21:42</td>
+                                           </tr>
+                                       </tbody>
+                                     </table>
+                          
+                                  </div>
+                                </div>
+
+
+                        </mdb-tab>
+                        
+
+                        <mdb-tab heading="Notes">
+
+                           <br>
+                           <app-vendor-notes-list [input_vendorNotesList]="vendorNotesList3" [ifAddButton]="true"
+                              [vendorID]="primaryKey" [dealID]="primaryKey" [Category]="'3'"
+                              (addNoteEvent)="onNotesAdded($event)">
+                           </app-vendor-notes-list>
+
+                        </mdb-tab>
+
+                        <mdb-tab heading="Status">
+                           <br>
+                              <mdb-checkbox [checked]="true">Completed</mdb-checkbox>
+
+
+                        </mdb-tab>
+                     </mdb-tabset>
+
+                  </form>
+               </mat-step>
+               <mat-step [stepControl]="firstFormGroup">
+                  <form [formGroup]="firstFormGroup">
+                     <ng-template matStepLabel>Underwriting Best/Final</ng-template>
+                     <mdb-tabset [buttonClass]="'classic-tabs tabs-cyan'" [contentClass]="'card'" class="classic-tabs">
+
+                        <mdb-tab heading="Documents">
+
+                           <br>
+
+                                <div class="row">
+                                  <div class="col-md-6">
+                                      <h6 style="color: gray;">Best and Final Offer</h6>
+                                  </div>
+                          
+                                  <div class="col-md-6">
+           
+                                      <input  mat-raised-button type="file"  matTooltip="Attachment"                      
+                                        style="float: right;"
+                                        value="Upload">
+                                  </div>
+                          
+                                </div>
+                                <br>
+                                <div class="row">
+                                  <div class="col-12">                             
+                                    <table class="table  table-striped table-hover font-size">
+                   
+                                       <thead class="thead-light">
+                                         <tr>
+                                           <th>Document</th>
+                                           <th>Stage</th>
+                                           <th>Modified</th>
+                                           
+                                         </tr>
+                                       </thead>
+                                       <tbody>
+                                          <tr >
+                                             <td> <a href="" target="_blank">First Offer.docx</a></td>
+                                             <td> <a href="" target="_blank">Underwriting Best/Final</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                           <tr >
+                                             <td> <a href="" target="_blank">Second Offer.xlsx</a></td>
+                                             <td> <a href="" target="_blank">Underwriting Best/Final</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                           
+                                           <tr >
+                                             <td> <a href="" target="_blank">Final Offer.xlsx</a></td>
+                                             <td> <a href="" target="_blank">Underwriting Best/Final</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                       </tbody>
+                                     </table>
+                          
+                                  </div>
+                                </div>
+
+
+                        </mdb-tab>
+
+                        <mdb-tab heading="Notes">
+
+                           <br>
+                           <app-vendor-notes-list [input_vendorNotesList]="vendorNotesList3" [ifAddButton]="true"
+                              [vendorID]="primaryKey" [dealID]="primaryKey" [Category]="'3'"
+                              (addNoteEvent)="onNotesAdded($event)">
+                           </app-vendor-notes-list>
+
+                        </mdb-tab>
+
+                        <mdb-tab heading="Status">
+                           <br>
+                              <mdb-checkbox [checked]="true">Completed</mdb-checkbox>
+
+
+                        </mdb-tab>
+                     </mdb-tabset>
+
+                  </form>
+               </mat-step>
+               <mat-step [stepControl]="fourthFormGroup">
+                  <form [formGroup]="fourthFormGroup">
+                     <ng-template matStepLabel>LOI / Under Contract</ng-template>
+                     <mdb-tabset [buttonClass]="'classic-tabs tabs-cyan'" [contentClass]="'card'" class="classic-tabs">
+
+                        <mdb-tab heading="Documents">
+
+                           <br>
+
+                                <div class="row">
+                                  <div class="col-md-6">
+                                      <h6 style="color: gray;">docx</h6>
+                                  </div>
+                          
+                                  <div class="col-md-6">
+
+                                      <input  mat-raised-button type="file"  matTooltip="Attachment"                      
+                                        style="float: right;"
+                                        value="Upload">
+                                  </div>
+                          
+                                </div>
+                                <br>
+                                <div class="row">
+                                  <div class="col-12">                             
+                                    <table class="table  table-striped table-hover font-size">
+                   
+                                       <thead class="thead-light">
+                                         <tr>
+                                           <th>Document</th>
+                                           <th>Stage</th>
+                                           <th>Modified</th>
+                                           
+                                         </tr>
+                                       </thead>
+                                       <tbody>
+                                          <tr >
+                                             <td> <a href="" target="_blank">LOIUnderContract.docx</a></td>
+                                             <td> <a href="" target="_blank">LOI / UnderContract</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                           <tr >
+                                             <td> <a href="" target="_blank">LOIUnderContract Version 2.docx</a></td>
+                                             <td> <a href="" target="_blank">LOI / UnderContract</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                           <tr >
+                                             <td> <a href="" target="_blank">LOIUnderContract Version 3.docx</a></td>
+                                             <td> <a href="" target="_blank">LOI / UnderContract</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                       </tbody>
+                                     </table>
+                          
+                                  </div>
+                                </div>
+
+
+                        </mdb-tab>
+      
+                        <mdb-tab heading="Notes">
+
+                           <br>
+                           <app-vendor-notes-list [input_vendorNotesList]="vendorNotesList3" [ifAddButton]="true"
+                              [vendorID]="primaryKey" [dealID]="primaryKey" [Category]="'3'"
+                              (addNoteEvent)="onNotesAdded($event)">
+                           </app-vendor-notes-list>
+
+                        </mdb-tab>
+               
+                         <mdb-tab heading="Status">
+                           <br>
+                              <mdb-checkbox [checked]="true">Completed</mdb-checkbox>
+
+
+                        </mdb-tab>
+                     </mdb-tabset>
+
+                  </form>
+               </mat-step>
+
+               <mat-step [stepControl]="fifthFormGroup">
+                  <form [formGroup]="fifthFormGroup">
+                     <ng-template matStepLabel>Due Diligence</ng-template>
+      
+                     <mdb-tabset [buttonClass]="'classic-tabs tabs-cyan'" [contentClass]="'card'" class="classic-tabs">
+             
+                        <mdb-tab heading="Documents">
+
+                           <br>
+
+                                <div class="row">
+                                  <div class="col-md-6">
+                                      <h6 style="color: gray;">docx</h6>
+                                  </div>
+                          
+                                  <div class="col-md-6">
+  
+                                      <input  mat-raised-button type="file"  matTooltip="Attachment"                      
+                                        style="float: right;"
+                                        value="Upload">
+                                  </div>
+                          
+                                </div>
+                                <br>
+                                <div class="row">
+                                  <div class="col-12">                             
+                                    <table class="table  table-striped table-hover font-size">
+                   
+                                       <thead class="thead-light">
+                                         <tr>
+                                           <th>Document</th>
+                                           <th>Stage</th>
+                                           <th>Modified</th>
+                                           
+                                         </tr>
+                                       </thead>
+                                       <tbody>
+                                          <tr >
+                                             <td> <a href="" target="_blank">dd.docx</a></td>
+                                             <td> <a href="" target="_blank">Due Delligence</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                           <tr >
+                                             <td> <a href="" target="_blank">dd v1.docx</a></td>
+                                             <td> <a href="" target="_blank">Due Delligence</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                           <tr >
+                                             <td> <a href="" target="_blank">dd v2.docx</a></td>
+                                             <td> <a href="" target="_blank">Due Delligence</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                           
+                                       </tbody>
+                                     </table>
+                          
+                                  </div>
+                                </div>
+
+
+                        </mdb-tab>
+                        
+
+                        <mdb-tab heading="Notes">
+
+                           <br>
+                           <app-vendor-notes-list [input_vendorNotesList]="vendorNotesList3" [ifAddButton]="true"
+                              [vendorID]="primaryKey" [dealID]="primaryKey" [Category]="'3'"
+                              (addNoteEvent)="onNotesAdded($event)">
+                           </app-vendor-notes-list>
+
+                        </mdb-tab>
+
+                        <mdb-tab heading="Status">
+                           <br>
+                              <mdb-checkbox [checked]="true">Completed</mdb-checkbox>
+
+
+                        </mdb-tab>
+                     </mdb-tabset>
+
+                  </form>
+               </mat-step>
+               <mat-step [stepControl]="sixthFormGroup">
+                  <form [formGroup]="sixthFormGroup">
+                     <ng-template matStepLabel>Non Refundable Period</ng-template>
+                     
+                     <mdb-tabset [buttonClass]="'classic-tabs tabs-cyan'" [contentClass]="'card'" class="classic-tabs">
+
+                        <mdb-tab heading="Documents">
+
+                           <br>
+
+                                <div class="row">
+                                  <div class="col-md-6">
+                                      <h6 style="color: gray;">Proposal</h6>
+                                  </div>
+                          
+                                  <div class="col-md-6">
+            
+                                      <input  mat-raised-button type="file"  matTooltip="Attachment"                      
+                                        style="float: right;"
+                                        value="Upload">
+                                  </div>
+                          
+                                </div>
+                                <br>
+                                <div class="row">
+                                  <div class="col-12">                             
+                                    <table class="table  table-striped table-hover font-size">
+                   
+                                       <thead class="thead-light">
+                                         <tr>
+                                           <th>Document</th>
+                                           <th>Stage</th>
+                                           <th>Modified</th>
+                                           
+                                         </tr>
+                                       </thead>
+                                       <tbody>
+                                          <tr >
+                                             <td> <a href="" target="_blank">RefundableAgreement v1.docx</a></td>
+                                             <td> <a href="" target="_blank">Non Refundable Period</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                           <tr >
+                                             <td> <a href="" target="_blank">RefundableAgreement v2.docx</a></td>
+                                             <td> <a href="" target="_blank">Non Refundable Period</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                           <tr >
+                                             <td> <a href="" target="_blank">RefundableAgreement Final.docx</a></td>
+                                             <td> <a href="" target="_blank">Non Refundable Period</a></td>
+                                             <td>08/04/2021 06:21:42</td>
+                                           </tr>
+                                       </tbody>
+                                     </table>
+                          
+                                  </div>
+                                </div>
+
+
+                        </mdb-tab>
+    
+                        <mdb-tab heading="Notes">
+
+                           <br>
+                           <app-vendor-notes-list [input_vendorNotesList]="vendorNotesList3" [ifAddButton]="true"
+                              [vendorID]="primaryKey" [dealID]="primaryKey" [Category]="'3'"
+                              (addNoteEvent)="onNotesAdded($event)">
+                           </app-vendor-notes-list>
+
+                        </mdb-tab>
+         
+                        <mdb-tab heading="Status">
+                           <br>
+                              <mdb-checkbox [checked]="true">Completed</mdb-checkbox>
+                           
+
+
+                        </mdb-tab>
+                        
+                     </mdb-tabset>
+
+
+                  </form>
+               </mat-step>
+
+
+               <mat-step>
+                  <ng-template matStepLabel>Closed</ng-template>
+
+                  <mdb-checkbox [checked]="true">Deal Closed</mdb-checkbox>
+
+               </mat-step>
+            </mat-horizontal-stepper>
+
+         </div>
+      </div>
+   </mdb-tab> -->
+   <mdb-tab heading="Deal Comments">
+
+
+      <div class="row">
+
+         <div class="col-12">
+            <mdb-card class="card-height text-white m-2">
+               <mdb-card-header class="light-blue-skin navbar">
+                  <h5 class="h5-responsive">Deal Comments</h5>
+               </mdb-card-header>
+               <mdb-card-body>
+                  <app-vendor-notes-list [input_vendorNotesList]="vendorNotesList3" [ifAddButton]="true"
+                     [vendorID]="primaryKey" [dealID]="primaryKey" [Category]="'3'"
+                     (addNoteEvent)="onNotesAdded($event)">
+                  </app-vendor-notes-list>
+               </mdb-card-body>
+            </mdb-card>
+
+         </div>
+      </div>
+
+
+
+   </mdb-tab>
+   <mdb-tab heading="BMR Notes">
+      <app-vendor-notes-list [input_vendorNotesList]="vendorNotesList3" [ifAddButton]="true" [vendorID]="primaryKey"
+         [dealID]="primaryKey" [Category]="'3'" (addNoteEvent)="onNotesAdded($event)">
+      </app-vendor-notes-list>
+   </mdb-tab>
+   <mdb-tab heading="Quick Links">
+      <div class="row">
+         <div class="col-12">
+            <mdb-card class="card-height text-white m-2">
+               <mdb-card-header class="light-blue-skin navbar">
+                  <h5 class="h4-responsive">Quick Links</h5>
+                  <mdb-icon data-toggle="modal" data-target="#basicExample" (click)="frameQuickLink.show()" far icon="edit">
+                  </mdb-icon>
+
+               </mdb-card-header>
+               <mdb-card-body>
+                  <div class="row">
+                     <div class="col-sm-4">
+                        <table >
+
+                           <tbody>
+                              <tr>
+                                 <td><a href="#">BMR News</a></td>
+                            
+                              </tr> 
+                              <tr>
+                                 <td><a href="#">Fredd</a></td>
+                                 
+                              </tr> 
+                              <tr>
+                                 <td><a href="#">Letter Head</a></td>
+                                 
+                              </tr> 
+                              <tr>
+                                 <td><a href="#">Manual Billings</a></td>
+                                 
+                              </tr>
+                           </tbody>
+                        </table>
+                     </div>
+   
+                     <div class="col-sm-4">
+                       
+                     </div>
+                     <div class="col-sm-4">
+                       
+                     </div>
+                  </div>
+
+               </mdb-card-body>
+            </mdb-card>
+         </div>
+
+
+      </div>
+
+
+
+   </mdb-tab>
+</mdb-tabset>

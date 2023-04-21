@@ -1,0 +1,230 @@
+import { Component, OnInit } from '@angular/core';
+import { ViewEncapsulation } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { SPOperationsService } from 'src/app/services/spoperations.service';
+import { ToastService, MDBModalService, MDBModalRef, ModalDirective } from 'ng-uikit-pro-standard';
+import { Router } from '@angular/router';
+import { CommonService } from 'src/app/Base/Common.service';
+import moment from 'moment';
+
+declare var Stimulsoft: any;
+@Component({
+  selector: 'app-reports',
+  templateUrl: './reports.component.html',
+  styleUrls: ['./reports.component.scss']
+})
+export class ReportsComponent implements OnInit {
+   array =
+   {
+     "DataSet": []
+   };
+  
+  public selectedReport: string = null;
+
+
+
+  constructor(
+   public router: Router,
+   public service: SPOperationsService,
+   private http: HttpClientModule,
+   public common: CommonService
+  ) {
+  }
+
+  options: any = new Stimulsoft.Viewer.StiViewerOptions();
+
+  viewer: any = new Stimulsoft.Viewer.StiViewer(this.options, 'StiViewer', false);
+  ngOnInit(): void {
+   Stimulsoft.Base.StiLicense.key =
+   "6vJhGtLLLz2GNviWmUTrhSqnOItdDwjBylQzQcAOiHkIWhY2n81mPf+ntQ7Vo+ZVF3yq99+pws506fQS" +
+   "KwSivi1RdN/nJsDWVftvv5onzLlLrx+M88aQeuPLGBEfWHGi5KRInCdr2S8KxVv+oGBErmnVddjzQb29" +
+   "XktaYi50L7QxEoIXf6ec9MyQHrI0zPJYXHRT4hCgkHMF8FSuk/koh3kBrGuSZmjHJezi6MjME3soyZmk" +
+   "1/L64QWvWTZfkrnvuwEzcg5mW3EKyRKa3Pv87HFQ7sQuSJci6SCxcTdwTURdj+/vZidubEBZAfFy1uzY" +
+   "++6I/Cd4n4R6fTtpz8Hj4Enqm3y3mFlHCefkYdNGxiT2P1s3QPXpt4OnPnh6E2j3urYjEg6Hg3oDIqj2" +
+   "8GyYUUD6Cme/dspEREDWDLQqyvxbC49P8Gp7uqTViMp+cByye5fB+yMtpe4Ztd4ABLLBXVf0Pi9xU77f" +
+   "WruVsI/0JK2QLO8piw2ZzEz20kSUuBO+ZIm7kCtQ3/DRa0zPhCJhWPDMQ0+9+DzCrpIeW1sx2xn69jjZ" +
+   "Yw5otLewGVaNEO2mVz/7ZgIu5QgP8+Es0ZaClg==";
+     
+  }
+
+  ngAfterViewInit() {
+   
+     this.viewReport();
+
+ }
+  navPropertyDocuments(){
+     window.open("https://alrafayconsulting.sharepoint.com/sites/PropertyManagement/REIT%20DMS/Forms/AllItems.aspx");
+  }
+  viewReport() {
+   //first Query to get data
+   var query = { //parameters to paas in to rest API
+
+     select: "*, StatusID/Id, StatusID/Title, DealTypeID/Title, SubMarketID/Title",
+     expand: "StatusID, DealTypeID, SubMarketID",
+     top: "5000",
+     orderby: "Created desc",
+     // filter: "ID eq 1 and Title eq 'abc' and Status eq 'In Progress' and Created ge 1/1/2001 and Created le 1/2/2001 "
+
+   }
+
+
+   this.service.readItems("DealMaster", query).then(async res => { //here in quotation we declare list name data comes in RES
+     var Deals = res['d'].results;
+
+     //2nd Query to get data from another list 
+     var query = { //parameters to paas in to rest API
+
+       select: "*",
+       expand: "",
+       top: "5000",
+       orderby: "Created desc",
+       // filter: "ID eq 1 and Title eq 'abc' and Status eq 'In Progress' and Created ge 1/1/2001 and Created le 1/2/2001 "
+
+     }
+
+     this.service.readItems("InvestmentSummary", query).then(async res => { //here in quotation we declare list name data comes in RES
+       var InvestmentSummary = res['d'].results;
+       console.log(InvestmentSummary);
+
+       var query = { //parameters to paas in to rest API
+
+        select: "*",
+        expand: "",
+        top: "5000",
+        orderby: "Created desc",
+        // filter: "ID eq 1 and Title eq 'abc' and Status eq 'In Progress' and Created ge 1/1/2001 and Created le 1/2/2001 "
+ 
+      }
+
+      this.service.readItems("KeyUpcomingDates", query).then(async res => { //here in quotation we declare list name data comes in RES
+        var KeyUpcomingDates = res['d'].results;
+
+        
+       var query = { //parameters to paas in to rest API
+
+        select: "*",
+        expand: "",
+        top: "5000",
+        orderby: "Created desc",
+        // filter: "ID eq 1 and Title eq 'abc' and Status eq 'In Progress' and Created ge 1/1/2001 and Created le 1/2/2001 "
+ 
+      }
+      this.service.readItems("Deal Tracker Notes", query).then(async res => { //here in quotation we declare list name data comes in RES
+        var Notes = res['d'].results;
+
+        for (var i = 0; i < Deals.length; i++) {
+
+          var filteredInvestment = InvestmentSummary.filter(a => a.DealIDId == Deals[i].ID);
+          var filteredKeyUpcoming = KeyUpcomingDates.filter(a => a.DealIDId == Deals[i].ID);
+          var filteredNotes = Notes.filter(a => a.DealID == Deals[i].ID);
+          if(filteredNotes.length > 0){
+            filteredNotes = filteredNotes[0].Notes;
+          }else{
+            filteredNotes = "";
+          }
+          this.array.DataSet.push({ //Push data in to array
+            "DEAL": Deals[i].Title,  //left pe report k naam aur right pe list k naam
+            "SF": Deals[i].SF,  
+            "FUND": filteredInvestment[0].Funds,
+            "TYPE":  Deals[i].DealTypeID.Title,
+            "LOCATION": Deals[i].SubMarketID.Title,
+            "$MM": filteredInvestment[0].PurchasePrice,
+            "STATUS": Deals[i].StatusID.Title,
+            "$PSF": filteredInvestment[0].PurchasePricePSF,
+            "$MM_1": filteredInvestment[0].StabilizedBasis,
+            "$PSF_1": filteredInvestment[0].StabilizedBasisPSF,
+            "YoC": filteredInvestment[0].UntrendedYoC,
+            "LabMarketRent": filteredInvestment[0].LabMarketRentPSFAnn,
+            "HardCostsPSF": filteredInvestment[0].HardCostsPSF,
+            "ConversionCostPSF": filteredInvestment[0].ConversionCostPSF,
+            "KEY DATE(s)/STATUS": moment(filteredKeyUpcoming[0].KeyUpcomingDate).format("MM/DD/YYYY"),
+            "Notes": filteredNotes,
+          });
+ 
+        }
+ 
+ 
+        var dataSet = new Stimulsoft.System.Data.DataSet("DB");
+        dataSet.readJson(this.array);
+ 
+ 
+        this.options.appearance.scrollbarsMode = true;
+        this.options.appearance.interfaceType = Stimulsoft.Viewer.StiInterfaceType.Auto;
+        var report = new Stimulsoft.Report.StiReport(); //stimulsoft report object (Tarika) 
+        report.loadFile("assets/dealtracking.mrt"); //path of report
+ 
+        report.dictionary.databases.clear();
+        report.regData(dataSet.dataSetName, "DB", dataSet);
+        report.dictionary.synchronize();
+ 
+        report.renderAsync(function () { //this is a way to render report on viewer in html
+          this.viewer.report = report;
+          this.viewer.renderHtml("reportViewer");
+ 
+        }.bind(this));
+      });
+
+      })
+  //Third list query goes  here     
+       
+
+     });
+
+
+
+   }); //service to get data from sharepoint via rest API
+
+
+
+
+
+
+
+
+
+
+ }
+
+  // ----------------------------------- filters ----------------------------
+  //#region 
+  public groupFilters: any = [];
+  public allGroupsSelected: boolean = false;
+
+  onFilter(event: any) {
+     // Lease Info
+  }
+
+  onBack() {
+    this.router.navigate(['/home']);
+  }
+  onFilterClick(frame: ModalDirective) {
+
+   frame.hide();
+ }
+  onFilterClear(frame: ModalDirective) {
+
+     frame.hide();
+  }
+
+  //#endregion
+
+  public selectedHistoricalTenant: string = null;
+
+  tenantHistoricalNotes(frame: any, tenant: string){
+     this.selectedHistoricalTenant = tenant;
+     frame.show();
+  }
+
+
+
+  public showReportFlg: boolean = false;
+  
+  showReport(){
+     this.showReportFlg = true;
+  }
+
+  reportChange(){
+     this.showReportFlg = false;
+  }
+
+}

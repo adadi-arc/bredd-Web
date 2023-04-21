@@ -1,0 +1,48 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { ClientComponent } from './client/client.component';
+import { AuthGuardGuard } from 'src/app/Base/AuthGuard/auth-guard.guard';
+
+import { ViewsComponent } from 'src/app/modules/client/views/views.component';
+import { DealportalComponent } from './dealportal/dealportal.component';
+import { DealslistComponent } from './dealslist/dealslist.component';
+import { BrokerComponent } from './broker/broker.component';
+import { BrokerlistComponent } from './broker/brokerlist/brokerlist.component';
+import { SellerComponent } from './seller/seller.component';
+import { SellerlistComponent } from './seller/sellerlist/sellerlist.component';
+
+
+const routes: Routes = [
+
+    {
+        path: 'form', component: ClientComponent, runGuardsAndResolvers: 'always', canActivate:[AuthGuardGuard], data: {sectionName: "Client"} 
+    },
+    { 
+        path: "views", component: ViewsComponent, runGuardsAndResolvers: 'always', canActivate:[AuthGuardGuard], data: {sectionName: "Views"} 
+    } ,
+    { 
+        path: "deals/main", component: DealportalComponent, runGuardsAndResolvers: 'always', canActivate:[AuthGuardGuard], data: {sectionName: "Category"} 
+      } ,
+      { 
+        path: "deals/list", component: DealslistComponent, runGuardsAndResolvers: 'always', canActivate:[AuthGuardGuard], data: {sectionName: "Category"} 
+      },
+      { 
+        path: "broker/form", component: BrokerComponent, runGuardsAndResolvers: 'always', canActivate:[AuthGuardGuard], data: {sectionName: "Category"} 
+      },
+      { 
+        path: "broker/list", component: BrokerlistComponent, runGuardsAndResolvers: 'always', canActivate:[AuthGuardGuard], data: {sectionName: "Category"} 
+      },
+      { 
+        path: "seller/form", component: SellerComponent, runGuardsAndResolvers: 'always', canActivate:[AuthGuardGuard], data: {sectionName: "Category"} 
+      },
+      { 
+        path: "seller/list", component: SellerlistComponent, runGuardsAndResolvers: 'always', canActivate:[AuthGuardGuard], data: {sectionName: "Category"} 
+      } 
+
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class ClientRoutingModule { }

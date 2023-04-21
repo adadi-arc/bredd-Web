@@ -1,0 +1,162 @@
+<!-- <ul id="hexGrid">
+  <li class="hex">
+    <a class="hexIn" href="#">
+      <img src="/assets/Building.png" alt="" />
+      <h1>Dashboard</h1>
+      <p>
+        <a routerLink="/buildingListings" class="btn btn-orange colorTxt">
+          View</a
+        >
+      </p>
+    </a>
+  </li>
+  <li class="hex">
+    <a class="hexIn" href="#">
+      <img src="/assets/Tenants.png" alt="" />
+      <h1>Dashboard</h1>
+      <p>
+        <a
+          routerLink="/tenantListings"
+          class="btn btn-orange colorTxt"
+          style="background-color: #f1c50e"
+        >
+          View</a
+        >
+      </p>
+    </a>
+  </li>
+  <li class="hex">
+    <a class="hexIn" href="#">
+      <img src="/assets/Portfolio.png" alt="" />
+      <h1>Dashboard</h1>
+      <p>
+        <a routerLink="/tenantPortfolio" class="btn btn-orange colorTxt">
+          View</a
+        >
+      </p>
+    </a>
+  </li>
+
+  <li class="hex">
+    <a class="hexIn" href="#">
+      <img class="biomedimg" src="/assets/bmr.jpg" alt="" />
+    </a>
+  </li> 
+  <li class="hex">
+    <a class="hexIn" href="#">
+      <img src="/assets/ops.png" alt="" />
+      <h1>Dashboard</h1>
+      <p>
+        <a routerLink="/bredd" class="btn btn-orange colorTxt">View</a>
+      </p>
+    </a>
+  </li>
+  <li class="hex">
+    <a class="hexIn" href="#">
+      <img src="/assets/Deliquency.png" alt="" />
+      <h1>Dashboard</h1>
+      <p>
+        <a routerLink="/delinquency" class="btn btn-orange colorTxt">View</a>
+      </p>
+    </a>
+  </li>
+  <li class="hex">
+    <a class="hexIn" href="#">
+      <img src="/assets/Expiration.png" alt="" />
+      <h1>Dashboard</h1>
+      <p>
+        <a routerLink="/expirationDates" class="btn btn-orange colorTxt"
+          >View</a
+        >
+      </p>
+    </a>
+  </li>
+ 
+</ul>   -->
+
+
+<!-- Notes: There are small areas where the hover effects don't work along the edges, caused by the overlapping neighboring divs. I don't think it's a big deal, but you could spread out the hexagons more to fix it, or maybe play with z-index on hover. I used the transparent color instead of opacity due to the bug that makes opacity changes look awful during transitions on transformed (rotated) elements. backface-visibility and 3D transform fixes didn't work. -->
+
+<div class="grid">
+  <ul id="hexGrid">
+    <li class="hex" *ngFor="let op of LandingPageArr">
+      <div class="hexIn">
+        <a class="hexLink" >
+              <div class='img' ><img [src]="op.Image" alt="" /></div>
+          <p id="demo2">
+            <button class="btn btn-orange colorTxt" style="padding: 10px" (click)="ViewDashboard(op.Title , op.src)">View</button>
+            <!-- <a class="btn btn-orange colorTxt" style="padding: 10px" (click)="ViewDashboard(op.Title , op.src)">
+              View</a
+            > -->
+          </p>
+        </a>
+      </div>
+    </li>
+    <!-- <li class="hex">
+      <div class="hexIn">
+        <a class="hexLink" >
+              <div class='img' ><img src="assets/Delinquency.png" alt="" /></div>
+          <p id="demo2">
+            <a routerLink="/delinquency" class="btn btn-orange colorTxt" style="padding: 10px">
+              View</a
+            >
+          </p>
+        </a>
+      </div>
+   
+    </li>
+    <li class="hex">
+      <div class="hexIn">
+        <a class="hexLink" >
+              <div class='img' ><img src="assets/ExpiringLeases.png" alt="" /></div>
+          <p id="demo2">
+            <a routerLink="/expirationDates" class="btn btn-orange colorTxt" style="padding: 10px">
+              View</a
+            >
+          </p>
+        </a>
+      </div>
+   
+    </li>
+    <li class="hex">
+      <div class="hexIn">
+        <a class="hexLink" >
+              <div class='img' ><img src="assets/OPSBI.png" alt="" /></div>
+          <p id="demo2">
+            <a routerLink="/bredd" class="btn btn-orange colorTxt" style="padding: 10px">
+              View</a
+            >
+          </p>
+        </a>
+      </div>
+   
+    </li>
+
+    <li class="hex">
+      <div class="hexIn">
+        <a class="hexLink" >
+              <div class='img' ><img src="assets/TenantListings.png" alt="" /></div>
+          <p id="demo2">
+            <a routerLink="/tenantListings" class="btn btn-orange colorTxt" style="padding: 10px">
+              View</a
+            >
+          </p>
+        </a>
+      </div>
+   
+    </li>
+    <li class="hex">
+      <div class="hexIn">
+        <a class="hexLink" >
+              <div class='img' ><img src="assets/TenantPortfolio.png" alt="" /></div>
+          <p id="demo2">
+            <a routerLink="/tenantPortfolio" class="btn btn-orange colorTxt" style="padding: 10px">
+              View</a
+            >
+          </p>
+        </a>
+      </div>
+   
+    </li> -->
+  </ul>
+    </div>

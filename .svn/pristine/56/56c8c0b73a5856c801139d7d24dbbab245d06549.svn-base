@@ -1,0 +1,375 @@
+import { Component, OnInit } from '@angular/core';
+import { ViewEncapsulation } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { SPOperationsService } from 'src/app/services/spoperations.service';
+import { ToastService, MDBModalService, MDBModalRef, ModalDirective } from 'ng-uikit-pro-standard';
+import { Router } from '@angular/router';
+import { CommonService } from 'src/app/Base/Common.service';
+import moment from 'moment';
+import { Autocomplete } from 'src/app/Base/Autocomplete';
+import { Dealtype } from 'src/app/modules/admin/dealtype/dealtype.model';
+import { Market } from 'src/app/modules/admin/market/market.model';
+declare var Stimulsoft: any; //declare stimulsoft :1
+@Component({
+  selector: 'app-reports',
+  templateUrl: './reports.component.html',
+  styleUrls: ['./reports.component.scss']
+})
+export class ReportsComponent implements OnInit {
+  public FNotes: string = null;
+  StartEventDate: Date = moment().startOf('year').toDate();
+  EndEventDate: Date = moment().endOf('year').toDate();
+
+  AutoCompDealType: Autocomplete<Dealtype> = new Autocomplete<Dealtype>("Title", "ID");
+  AutoCompMarket: Autocomplete<Market> = new Autocomplete<Market>("Title", "ID");
+
+  options: any = new Stimulsoft.Viewer.StiViewerOptions(); //Object (options: scroller, page view/ options are used in viewer as this.option) :2
+  viewer: any = new Stimulsoft.Viewer.StiViewer(this.options, 'StiViewer', false); // Object (Report Viewer) :3 
+
+  array =                //object hay us k andar array hay. object ka name array hay. array ka ame data set hay
+    {
+      "DataSet": []
+    };
+
+  Market: any[] = [];
+  DealType: any[] = [];
+  MarketName: string = "";
+  DealTypeName: string = "";
+
+
+
+  constructor(
+    public router: Router,
+    public service: SPOperationsService,
+    private http: HttpClientModule,
+    public common: CommonService
+  ) {
+  }
+
+  ngOnInit(): void { // Stimulsoft Licensing Key on page load 
+    Stimulsoft.Base.StiLicense.key =
+
+      "6vJhGtLLLz2GNviWmUTrhSqnOItdDwjBylQzQcAOiHkIWhY2n81mPf+ntQ7Vo+ZVF3yq99+pws506fQS" +
+      "KwSivi1RdN/nJsDWVftvv5onzLlLrx+M88aQeuPLGBEfWHGi5KRInCdr2S8KxVv+oGBErmnVddjzQb29" +
+      "XktaYi50L7QxEoIXf6ec9MyQHrI0zPJYXHRT4hCgkHMF8FSuk/koh3kBrGuSZmjHJezi6MjME3soyZmk" +
+      "1/L64QWvWTZfkrnvuwEzcg5mW3EKyRKa3Pv87HFQ7sQuSJci6SCxcTdwTURdj+/vZidubEBZAfFy1uzY" +
+      "++6I/Cd4n4R6fTtpz8Hj4Enqm3y3mFlHCefkYdNGxiT2P1s3QPXpt4OnPnh6E2j3urYjEg6Hg3oDIqj2" +
+      "8GyYUUD6Cme/dspEREDWDLQqyvxbC49P8Gp7uqTViMp+cByye5fB+yMtpe4Ztd4ABLLBXVf0Pi9xU77f" +
+      "WruVsI/0JK2QLO8piw2ZzEz20kSUuBO+ZIm7kCtQ3/DRa0zPhCJhWPDMQ0+9+DzCrpIeW1sx2xn69jjZ" +
+      "Yw5otLewGVaNEO2mVz/7ZgIu5QgP8+Es0ZaClg==";
+
+    this.viewReport(this.StartEventDate, this.EndEventDate);
+  }
+
+  ngAfterViewInit() {
+    this.getDealType();
+    this.getMarket();
+
+  }
+  navPropertyDocuments() {
+    window.open("https://alrafayconsulting.sharepoint.com/sites/PropertyManagement/REIT%20DMS/Forms/AllItems.aspx");
+  }
+
+  //Query to get Market data from Market list for  Dorpdown it should call on ngONIT
+  getMarket() {
+
+    //parameters to paas in to rest API
+    var query = {
+
+      select: "*",
+      expand: "",
+      top: "5000",
+      orderby: "Created desc",
+    }
+    this.service.readItems("Market", query).then(async res => {
+      this.Market = res['d'].results;
+      this.AutoCompMarket.data = res['d'].results as Market[];
+      this.AutoCompMarket.resultObserve();
+
+
+    })
+  };
+
+  getDealType() {
+
+    //parameters to paas in to rest API
+    var query = {
+
+      select: "*",
+      expand: "",
+      top: "5000",
+      orderby: "Created desc",
+    }
+    this.service.readItems("DealType", query).then(async res => {
+      this.AutoCompDealType.data = res['d'].results as Dealtype[];
+      this.AutoCompDealType.resultObserve();
+
+
+    })
+  };
+
+  viewReport(startDate, endDate) {
+    this.common.ShowSpinner();
+    startDate = moment(startDate).format('YYYY-MM-DD');
+
+    endDate = moment(endDate).format('YYYY-MM-DD');
+    this.array = {
+      "DataSet": []
+    }
+    var DealCommentsFilters = "";//ReportOutput eq true and isDeleted eq false
+    var filter = "";//ReportOutput eq true and isDeleted eq false
+    var KeyFilters = "";
+
+
+    if (startDate != "" && startDate != undefined && startDate != null) {
+      if (filter != "")
+        filter += "and"
+
+        if (DealCommentsFilters != "")
+        DealCommentsFilters += "and"
+
+        if (KeyFilters != "")
+        KeyFilters += "and"
+
+      filter += " DateEntered ge '" + startDate + "'";
+      DealCommentsFilters += " Created ge '" + startDate + "'";
+      KeyFilters += " KeyUpcomingDate ge '" + startDate + "'";
+    }
+
+    if (endDate != "" && endDate != undefined && endDate != null) {
+      if (filter != "")
+        filter += "and"
+
+        if (DealCommentsFilters != "")
+        DealCommentsFilters += "and"
+
+        if (KeyFilters != "")
+        KeyFilters += "and"
+
+      filter += " DateEntered le '" + endDate + "'";
+      DealCommentsFilters += " Created le '" + endDate + "'";
+      KeyFilters += " KeyUpcomingDate le '" + endDate + "'";
+    }
+
+    //first Query to get data
+    //parameters to paas in to rest API
+
+    if (this.MarketName != "" && this.MarketName != undefined && this.MarketName != null) {
+      filter += " and ("
+      for (let index = 0; index < this.MarketName.length; index++) {
+        const element = this.MarketName[index];
+        if (this.MarketName.length > 1 && index !=0)
+          filter += " or"
+
+        filter += " MarketId eq " + element.toString();
+      }
+      filter += ")";
+    }
+    if (this.DealTypeName != "" && this.DealTypeName != undefined && this.DealTypeName != null) {
+      filter += " and ("
+      for (let index = 0; index < this.DealTypeName.length; index++) {
+        const element = this.DealTypeName[index];
+        if (this.DealTypeName.length > 1 && index !=0)
+          filter += " or"
+        
+        filter += " DealTypeId eq " + element.toString();
+      }
+      filter += ")";
+    }
+
+    filter +=" and isDeleted eq false"
+
+    var query = {
+
+      select: "*",
+      expand: "",
+      top: "5000",
+      filter: KeyFilters,
+      orderby: "Created desc",
+      // filter: "ID eq 1 and Title eq 'abc' and Status eq 'In Progress' and Created ge 1/1/2001 and Created le 1/2/2001 "
+
+    }
+    this.service.readItems("KeyUpcomingDates", query).then(async res => { //here in quotation we declare list name data comes in RES
+      var KeyUpcomingDates = res['d'].results;
+      var query = {
+
+        select: "*",
+        expand: "",
+        top: "5000",
+        filter: DealCommentsFilters,
+        orderby: "Created desc",
+        // filter: "ID eq 1 and Title eq 'abc' and Status eq 'In Progress' and Created ge 1/1/2001 and Created le 1/2/2001 "
+  
+      }
+      this.service.readItems("Deal Comments Discussion Replies", query).then(async res => { //here in quotation we declare list name data comes in RES
+        var DealCommentsNotes = res['d'].results;
+
+    var query = {
+
+      select: "*, Status/Id, Status/Title, DealType/Title, SubMarket/Title",
+      expand: "Status, DealType, SubMarket",
+      top: "5000",
+      filter: filter,
+      orderby: "Created desc",
+      // filter: "ID eq 1 and Title eq 'abc' and Status eq 'In Progress' and Created ge 1/1/2001 and Created le 1/2/2001 "
+
+    }
+    this.service.readItems("DealMaster", query).then(async res => { //here in quotation we declare list name data comes in RES
+      var Deals = res['d'].results;
+      Deals =  Deals.filter(a => a.ReportOutput == true );
+
+      //2nd Query to get data from another list 
+      var query = { //parameters to paas in to rest API
+
+        select: "*,Funds/Id, Funds/Title,InPlaceRSF",
+        expand: "Funds",
+        top: "5000",
+        orderby: "ID desc",
+        // filter: "ID eq 1 and Title eq 'abc' and Status eq 'In Progress' and Created ge 1/1/2001 and Created le 1/2/2001 "
+
+      }
+
+      this.service.readItems("InvestmentSummary", query).then(async res => { //here in quotation we declare list name data comes in RES
+        var InvestmentSummary = res['d'].results;
+
+        //Third list query goes  here     
+
+        for (var i = 0; i < Deals.length; i++) {
+
+          var filteredInvestment = InvestmentSummary.filter(a => a.DealId == Deals[i].ID);
+          var filteredDealComments = DealCommentsNotes.filter(a => a.DealId == Deals[i].ID);
+          var filteredKeyDates = KeyUpcomingDates.filter(a => a.DealId == Deals[i].ID);
+
+          this.array.DataSet.push({ //Push data in to array
+            "DEAL": Deals[i].Title,  //left pe report k naam aur right pe list k naam
+            "SF": (filteredInvestment[0] == undefined)? 0:filteredInvestment[0].InPlaceRSF,
+            "FUND": (filteredInvestment[0] == undefined)? "":filteredInvestment[0].Funds.Title,
+            "TYPE": Deals[i].DealType.Title,
+            "LOCATION": Deals[i].SubMarket.Title,
+            "$MM": this.numFormatter((filteredInvestment[0] == undefined)? 0:filteredInvestment[0].PurchasePrice),
+            "STATUS": Deals[i].Status.Title,
+            "$PSF": (filteredInvestment[0] == undefined)? 0:filteredInvestment[0].PurchasePricePSF,
+            "$MM_1": this.numFormatter((filteredInvestment[0] == undefined)? 0:filteredInvestment[0].StabilizedBasis),
+            "$PSF_1": (filteredInvestment[0] == undefined)? 0:filteredInvestment[0].StabilizedBasisPSF,
+            "YoC": (filteredInvestment[0] == null)?0:filteredInvestment[0].UntrendedYoC /100,
+            "LabMarketRent": (filteredInvestment[0] == undefined)? 0:filteredInvestment[0].LabMarketRentPSFAnn,
+            "HardCostsPSF": (filteredInvestment[0] == undefined)? 0:filteredInvestment[0].HardCostsPSF,
+            "ConversionCostPSF": (filteredInvestment[0] == undefined)? 0:filteredInvestment[0].ConversionCostPSF,
+            "Notes":(filteredDealComments[0] == undefined)? "":filteredDealComments[0].Reply.replace(/<[^>]*>/g, ''),
+            "KEYDATESTATUS":(filteredKeyDates[0] == undefined)? "":moment(filteredKeyDates[0].KeyUpcomingDate).format('YYYY-MM-DD'),
+            "Dates":"Test",
+            "FootNotes": this.FNotes,
+            "CurrentDate": moment().format('YYYY-MM-DD'),
+
+          });
+
+        }
+
+
+        var dataSet = new Stimulsoft.System.Data.DataSet("DB");
+        dataSet.readJson(this.array);
+
+
+        this.options.appearance.scrollbarsMode = true;
+        this.options.appearance.interfaceType = Stimulsoft.Viewer.StiInterfaceType.Auto;
+        var report = new Stimulsoft.Report.StiReport(); //stimulsoft report object (Tarika) 
+        report.loadFile("assets/DealTracker.mrt"); //path of report
+
+        report.dictionary.databases.clear();
+        report.regData(dataSet.dataSetName, "DB", dataSet);
+        report.dictionary.synchronize();
+
+        report.renderAsync(function () { //this is a way to render report on viewer in html
+          this.viewer.report = report;
+          this.viewer.renderHtml("reportViewer");
+          this.common.HideSpinner();
+        }.bind(this));
+      });
+
+
+
+    }); //service to get data from sharepoint via rest API
+      });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  }
+  numFormatter(num) {
+    if(num >= 1000 && num <= 999999){
+        return (num/1000000).toFixed(2); // convert to K for number from > 1000 < 1 million 
+    }else if(num >= 1000000 && num <= 999999999){
+        return (num/1000000).toFixed(1); // convert to M for number from > 1 million 
+    }else if(num < 999 && num > 0){
+        return (num/1000000).toFixed(3); // if value < 1000, nothing to do
+    }else if(num == 0)
+    return 0;
+}
+  // ----------------------------------- filters ----------------------------
+  //#region 
+  public groupFilters: any = [];
+  public allGroupsSelected: boolean = false;
+
+  onFilter(event: any) {
+    // Lease Info
+  }
+
+  onBack() {
+    this.router.navigate(['/home']);
+  }
+
+  onFilterClick(frame: ModalDirective) {
+    var qry_StartDate = moment(this.StartEventDate).format('YYYY-MM-DD');
+
+    var qry_EndDate = moment(this.EndEventDate).format('YYYY-MM-DD');
+
+    this.viewReport(qry_StartDate, qry_EndDate);
+    frame.hide();
+
+  }
+
+  onFilterClear(frame: ModalDirective) {
+    this.StartEventDate = moment().startOf('year').toDate();
+
+    this.EndEventDate = moment().endOf('year').toDate();
+    this.MarketName = "";
+    this.DealTypeName = "";
+
+    this.viewReport(this.StartEventDate, this.EndEventDate);
+    frame.hide();
+
+  }
+
+  //#endregion
+
+  public selectedHistoricalTenant: string = null;
+
+  tenantHistoricalNotes(frame: any, tenant: string) {
+    this.selectedHistoricalTenant = tenant;
+    frame.show();
+  }
+
+
+
+  public showReportFlg: boolean = false;
+
+  showReport() {
+    this.showReportFlg = true;
+  }
+
+  reportChange() {
+    this.showReportFlg = false;
+  }
+
+}

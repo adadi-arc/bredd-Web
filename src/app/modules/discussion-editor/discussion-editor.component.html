@@ -1,0 +1,35 @@
+
+
+<div class="modal-header  darken-3 white-text  gradient-card-header narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center" style="background-color: #506a93!important;">
+    <h4 class="h4-responsive">
+    Notes
+    </h4>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <a (click)="modalRef.hide()">
+            <button mdbBtn type="button" style="background-color: #8195b3;" size="sm" class="waves-light" mdbWavesEffect>
+                <mdb-icon fas icon="times"></mdb-icon>
+            </button>
+        </a>
+    </div>
+</div> 
+
+<div class="modal-body mb-0 text-left" id="modalBodyArea">
+  
+
+<div class="row">
+    <div class="col-md-12">
+        <angular-editor required  [ngModelOptions]="{standalone: true}" name="Discusssion"
+        [placeholder]="'Enter text here...'" [(ngModel)]="Discussion" [config]="config"></angular-editor>
+    </div>
+</div> 
+
+<div class="row mt-3"> 
+    <div class="col-md-6" [hidden]="Mode == 'edit'">
+        <button mdbBtn type="button" class="btn-sm" style="background-color: #506a93; color: white;" (click)="Submit()" ><mdb-icon fas icon="save"
+                class="mr-1"></mdb-icon>Submit</button>
+    </div>
+    <div class="col-md-6" [hidden]="Mode == 'Submit'">
+        <button mdbBtn type="button" class="btn-sm" style="background-color: #506a93; color: white;" (click)="Update()" ><mdb-icon fas icon="save"
+                class="mr-1"></mdb-icon>Update</button>
+    </div>
+</div>

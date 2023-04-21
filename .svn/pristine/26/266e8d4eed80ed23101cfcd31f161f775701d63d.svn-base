@@ -1,0 +1,8 @@
+
+export class VendorNotes{
+    ID:number = 0; 
+    DealID :number = null;
+    Notes:string = null;    
+    Category:string = null; 
+    Modified:Date = null;    
+}

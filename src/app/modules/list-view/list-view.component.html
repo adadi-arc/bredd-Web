@@ -1,0 +1,290 @@
+<div class="row fixed-top my-1 pl-3 pr-3 stickyMenuTop">
+  <div class="btn-group" role="group" aria-label="Basic example">
+    <a class="stickyButtons elem" (click)="frame.show()" data-target="#basicExample">
+      <button mdbBtn type="button" class="btn-sm">
+        <mdb-icon fas icon="filter" class="mr-1"></mdb-icon>Filter
+      </button>
+    </a>
+    <app-export [exportFileName]="FileName" [exportData]="ExcelfinalArr"
+      [exportColumnNamesAndFormat]="ColumnNamesAndFormat" [exportHeader]="header" [exportFooter]='0'>
+    </app-export>
+
+
+
+
+  </div>
+  <form class="col-lg-4 col-md-4 col-sm-8 col-9 example-form elem">
+    <form class="form-inline md-form active-pink-2 mt-0 mb-0">
+      <mdb-icon style="color: #506a93" fas icon="search" aria-hidden="true" class="mr-2"></mdb-icon>
+      <input class="form-control form-control-sm w-75 TopMenuSearchField" [(ngModel)]="searchKey" name="searchKey"
+        type="text" placeholder="Search" aria-label="Search" (keyup)="applyFilter()" mdbInput />
+      <button style="margin: 0px" placement="left" mdbTooltip="Clear" matSuffix class="TableSearchCloseBtn" mdbBtn
+        type="button" flat="true" size="md" mdbWavesEffect *ngIf="searchKey" (click)="onSearchClick()">
+        <mdb-icon fas icon="times" aria-hidden="true"></mdb-icon>
+      </button>
+    </form>
+  </form>
+  <div class="col-lg-5 col-md-9 col-sm-12 col-xs-12 PaginatorFixed IsSmallScreen">
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 50, 100]" [pageSize]="pageSize" showFirstLastButtons>
+      <!-- <mat-paginator #paginator [pageSizeOptions]="30"  [pageSize]="pageSize" [length]="resultslength" showFirstLastButtons (page)="onPageChanged()">  -->
+      <!-- <mat-paginator #paginator [pageSizeOptions]="[20]" [pageSize]="pageSize" showFirstLastButtons (page)="onPageChanged($event)"> -->
+    </mat-paginator>
+  </div>
+</div>
+<div style="overflow-y: auto" mdbModal #frame="mdbModal" class="modal fade right" id="frameModalTop" tabindex="-1"
+  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" [config]="{ backdrop: true }">
+  <div class="modal-dialog modal-full-height modal-right modal-notify modal-info" role="document">
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead">Filter</p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="frame.hide()">
+          <span aria-hidden="true" class="white-text">×</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="text-left">
+          <div class="row" style="margin-top: 1rem !important">
+            <div class="col-md-12">
+              <div class="md-form" style="margin-top: 1rem !important">
+                <div class="md-form" style="margin-top: 1rem !important"></div>
+              </div>
+            </div>
+            <!-- <mat-form-field class="example-full-width">
+                <mat-label>Proper</mat-label>
+                <mat-select [multiple]="true"  #Regions  (ngModelChange)="AutoCompRegion.searchResult.next($event)"
+                  label="Regions" type="text" name="Region" [(ngModel)]="Region">
+                  <mat-option  (click)="toggleAllSelection('Regions')">-- Select All --</mat-option>
+                  <mat-option *ngFor="let option of propertManagers" [value]="option">
+                    {{ option }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field class="example-full-width">
+                <mat-label>Market</mat-label>
+                <mat-select [multiple]="true" #Markets (ngModelChange)="AutoCompMarket.searchResult.next($event)"
+                  label="Markets" type="text" name="MarketName" [(ngModel)]="Market">
+                  <mat-option [value]="0" (click)="toggleAllSelection('Markets')">-- Select All --</mat-option>
+  
+                  <mat-option *ngFor="let option of AutoCompMarket.results | async" [value]="option">
+                    {{ option }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field> -->
+            <!-- <mat-form-field class="example-full-width">
+              <mat-label>Property Name</mat-label>
+              <mat-select [multiple]="true" #Property (ngModelChange)="AutoCompProperty.searchResult.next($event)"
+                label="PropertyName" type="text" name="PropertyName" [(ngModel)]="PropertyManager">
+                <mat-option [value]="0" (click)="toggleAllSelection('Property')">-- Select All --</mat-option>
+                <mat-option *ngFor="let option of AutoCompProperty.results | async" [value]="option.Building_x0020_ID">
+                  {{ option.Title }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <mat-form-field class="example-full-width">
+              <mat-label>Property Name</mat-label>
+              <mat-select [multiple]="true" #Property (ngModelChange)="AutoCompProperty.searchResult.next($event)"
+              label="PropertyName" type="text" name="PropertyName" [(ngModel)]="PropertyManager" >
+                <mat-option>
+                  <ngx-mat-select-search
+                    name="searchUserLeadName"
+                    #searchUserLeadName="ngModel"
+                    [(ngModel)]="searchUserLead"
+                    (ngModelChange)="AutoCompProperty.searchResult.next($event)"
+                    placeholderLabel="Search..."
+                    noEntriesFoundLabel="Not Found!"
+                    [ngModelOptions]="{ standalone: true }"
+                  >
+                  </ngx-mat-select-search>
+                </mat-option>
+                <!-- <mat-option  (click)="toggleAllSelection('Property')">-- Select All --</mat-option> -->
+                <mat-option *ngFor="let option of AutoCompProperty.results | async" [value]="option.Building_x0020_ID">
+                  {{ option.Title }}
+                </mat-option>              </mat-select >
+  
+            </mat-form-field>
+            <div class="col-md-6">
+              <button (click)="requestFilter(frame)" style="background-color: #506a93 !important; color: white;"
+                class="w-100 modalFiltersButton" mdbBtn color="info" size="md" type="button" mdbWavesEffect>
+                <mdb-icon fas icon="filter" class="mr-1"></mdb-icon> Apply Filter
+              </button>
+            </div>
+            <div class="col-md-6">
+              <button (click)="clearFilter()" class="w-100 modalFiltersButton" mdbBtn color="info" size="md"
+                type="button" mdbWavesEffect outline="true">
+                <mdb-icon fas icon="minus" class="mr-1"></mdb-icon> Clear Filter
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row py-4">
+  <div class="col-lg-12 col-md-12">
+    <mdb-card cascade="true" narrower="true">
+      <div
+        class="view view-cascade gradient-card-header  narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center"
+        style="background-color: #506a93 !important;">
+        <h4 class="h4-responsive">Ops List</h4>
+      </div>
+      <mdb-card-body cascade="true">
+        <div class="col-md-12 col-sm-12 col-xs-12 IsBigScreen justify-content-center">
+          <!-- <mat-paginator (page)="syncPrimaryPaginator($event)" [pageSize]="paginator.pageSize"
+              [pageIndex]="paginator.pageIndex" [length]="paginator.length" [pageSizeOptions]="paginator.pageSizeOptions"
+              showFirstLastButtons></mat-paginator> -->
+          <br />
+        </div>
+        <div class="=row">
+          <div class="mat-elevation-z8 table-responsive difftab">
+            <mat-table [dataSource]="listData" matSort>
+              <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                <mat-cell *matCellDef="let element" class="TableCommandButtons" style="width:2px !important">
+                  <div class="btn-group ">
+                    <button class="matIconButtonsCustom-this" mat-button matTooltip="Add Notes"
+                      (click)="EditNotes(element)">
+                      <i class="far fa-file-alt shadow-Icon-Color" style="font-size: 18px;"></i>
+
+                      <!-- <mat-icon class="shadow-Icon-Color">remove_red_eye</mat-icon> -->
+                    </button>
+
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="ENTITYID">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Entity ID </mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="ENTITYID">
+                  {{ element.ENTITYID }}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="BLDGNAME">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Property Name </mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="BLDGNAME" style="width:25% !important">
+                  {{ element.BLDGNAME }}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="JOBCODE">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Job Code </mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="JOBCODE">
+                  {{ element.JOBCODE }}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="PHASECODE">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Phase</mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="PHASECODE">
+                  {{ element.PHASECODE }}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="BUDGET">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Budget</mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="BUDGET">
+                  {{ element.BUDGET | currency:'USD':'symbol':'1.2-2'}}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="SPENT">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>SPENT</mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="SPENT">
+                  {{ element.SPENT | currency:'USD':'symbol':'1.2-2'}}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="VARIANCE">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Variance</mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="VARIANCE">
+                  {{ element.VARIANCE | currency:'USD':'symbol':'1.2-2' }}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="VARIANCEPER">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Variance %</mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="VARIANCEPER"
+                  [ngClass]="{ cell:element.VARIANCEPER >= 10}">
+                  <!-- <mat-cell *matCellDef="let element" data-label="VARIANCEPER" [ngClass]="{ cell:element .VARIANCEPER >= -142.85}" > -->
+                  {{ element.VARIANCEPER }}%
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Note">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Recent Note</mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="Note" [innerHTML]="element.Note"
+                  style="width:25% !important">
+
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="NoteDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Recent Note Date</mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="NoteDate" style="width:15% !important">
+                  {{ element.NoteDate }}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="NoteIndicator">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Note Indicator</mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="NoteIndicator" style="width:15% !important">
+                  <mdb-icon fas icon="check-circle" class="mr-1 text-success" style="font-size: 18px; color: success"
+                    *ngIf="element.NoteIndicator">
+                  </mdb-icon>
+                </mat-cell>
+              </ng-container>
+              <!-- <ng-container matColumnDef="CATEGORY">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
+                  <mat-cell *matCellDef="let element" data-label="CATEGORY">
+                    {{ element.CATEGORY }}
+                  </mat-cell>
+                </ng-container> -->
+              <!-- <ng-container matColumnDef="PropertyID">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Entity ID </mat-header-cell>
+                  <mat-cell *matCellDef="let element" data-label="PropertyID">
+                    {{ element.PropertyID }}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="PropertyName">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Property Name</mat-header-cell>
+                  <mat-cell *matCellDef="let element" data-label="PropertyName">
+                    {{ element.PropertyName }}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="PropertyManager">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Property Manager</mat-header-cell>
+                  <mat-cell *matCellDef="let element" data-label="PropertyManager">
+                    {{ element.PropertyManager }}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Region">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Region</mat-header-cell>
+                  <mat-cell *matCellDef="let element" data-label="Region">
+                    {{ element.Region }}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Market">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Market</mat-header-cell>
+                  <mat-cell *matCellDef="let element" data-label="Market">
+                    {{ element.Market }}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="NotesIndicator">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Notes Indicator</mat-header-cell>
+                  <mat-cell *matCellDef="let element" data-label="NotesIndicator">
+                    {{ element.NotesIndicator == true?'Yes' : 'No' }}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="RecentNotes">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Recent Notes</mat-header-cell>
+                  <mat-cell *matCellDef="let element" data-label="RecentNotes" [innerHTML]="element.RecentNotes">
+                  </mat-cell>
+                </ng-container> -->
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <!-- <mat-row *matRowDef="let row; columns: displayedColumns" [ngClass]="{ divider:row.VARIANCE >= 0}" ></mat-row> -->
+              <mat-row *matRowDef="let row; columns: displayedColumns"
+                [ngClass]="{ divider:row.VARIANCE >= 50000 && row.VARIANCEPER >= 10}"></mat-row>
+            </mat-table>
+          </div>
+          <app-table-bottom-area [listData]="listData" [search]="searchKey"> </app-table-bottom-area>
+        </div>
+      </mdb-card-body>
+      <!--/.Card content-->
+    </mdb-card>
+    <!--/.Card-->
+  </div>
+  <!--Grid column-->
+</div>

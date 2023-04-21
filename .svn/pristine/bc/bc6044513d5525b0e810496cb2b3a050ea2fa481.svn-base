@@ -1,0 +1,464 @@
+import { Component, OnInit, AfterViewInit  } from '@angular/core';
+import { GenericService } from 'src/app/services/generic.service';
+
+import { Deal } from '../deal.model';
+import { DealMaster } from '../dealmaster.model';
+import { Router, ActivatedRoute } from '@angular/router';
+import { NgForm } from '@angular/forms';
+
+import { MDBModalRef, MDBModalService, ToastService } from 'ng-uikit-pro-standard'
+import { Contactperson } from '../contactperson.model';
+import { SpBLBase } from 'src/app/Base/SpBLBase/SpBLBase.component';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ConfirmDialogeService } from 'src/app/confirm-dialoge/confirm-dialoge.service';
+import { MessageDialogeService } from 'src/app/message-dialoge/message-dialoge.service';
+import { CommonService } from '../../../Base/Common.service';
+import { SPOperationsService } from 'src/app/services/spoperations.service';
+
+import { SharePointConfigService } from 'src/app/Base/SharePoint/share-point-config.service';
+import { Autocomplete } from 'src/app/Base/Autocomplete';
+import { Dealtype } from 'src/app/modules/admin/dealtype/dealtype.model';
+import { Projecttype } from 'src/app/modules/admin/projecttype/projecttype.model';
+import { Market } from 'src/app/modules/admin/market/market.model';
+import { Broker } from 'src/app/modules/admin/broker/broker.model';
+import { Brokerage } from 'src/app/modules/admin/brokerage/brokerage.model';
+import { SubMarket } from 'src/app/modules/admin/submarket/submarket.model';
+import { Status } from 'src/app/modules/admin/status/status.model';
+import { Vendor } from '../vendor/vendor.model';
+
+
+
+@Component({
+  selector: 'app-client',
+  templateUrl: './client.component.html',
+  styleUrls: ['./client.component.scss']
+})
+
+export class ClientComponent extends SpBLBase<Deal> implements OnInit {
+
+
+  public modalRef: MDBModalRef;
+  primaryKey: number;
+  linkDocument: string = "";
+  public format = "### \'%\'";
+  public VVV: any;
+  datemask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
+  clientDocumentSpConfig = null;
+  AutoCompVendor: Autocomplete<Vendor> = new Autocomplete<Vendor>("Title", "ID");
+  AutoCompDealType: Autocomplete<Dealtype> = new Autocomplete<Dealtype>("Title", "ID");
+  AutoCompProjectType: Autocomplete<Projecttype> = new Autocomplete<Projecttype>("Title", "ID");
+  AutoCompMarket: Autocomplete<Market> = new Autocomplete<Market>("Title", "ID");
+  AutoCompBrokerage: Autocomplete<Brokerage> = new Autocomplete<Brokerage>("Title", "ID");
+  AutoCompBroker: Autocomplete<Broker> = new Autocomplete<Broker>("Title", "ID");
+  AutoCompSubMarket: Autocomplete<SubMarket> = new Autocomplete<SubMarket>("Title", "ID");
+  AutoCompStatus: Autocomplete<Status> = new Autocomplete<Status>("Title", "ID");
+  AutoCompFund: Autocomplete<Status> = new Autocomplete<Status>("Title", "ID");
+  contactNotesList: any[] = [];
+  pp:string = "";
+  ID: number = 0;
+  parent: string = "";
+  viewID: number = 0;
+  contactData: any = null;
+  vendorNotesList3: any[] = [];
+  repeating: any[] = [];
+  Sellerrepeating: any[] = [];
+  QuickLinks: any[] = [];
+  array: any[] = [{
+    date: '',
+    description: ''
+  }];
+  Sellerarray: any[] = [{
+    name: ''
+  }];
+
+  constructor(
+    public service: SPOperationsService,
+    public router: Router,
+    public route: ActivatedRoute,
+    public spinner: NgxSpinnerService,
+    public toast: ToastService,
+    public dialog: ConfirmDialogeService,
+    public modalService: MDBModalService,
+    public messageDialoge: MessageDialogeService,
+    public common: CommonService,
+    public spConfigService: SharePointConfigService
+  ) {
+    super(service, router, route, spinner, toast, dialog, messageDialoge);
+
+    this.formTitle = "Deal Master";
+    this.addListTitle("DealMaster", "DealMaster");
+    this.query = {
+      select: "ID, Title",
+    }
+  }
+
+  public Initializeobject() {
+    this.formData = new Deal();
+
+    this.AddRow();
+    this.AddSellerRow();
+    this.QuickLinksAddRow();
+  }
+
+
+  ngOnInit(): void {
+
+    super.ngOnInit();
+    this.getMarkets();
+    this.getDealTypes();
+    this.getProjectTypes();
+    this.getBrokerage();
+    this.getBroker();
+    this.getStatus();
+    this.modalService.closed.subscribe(() => {
+      console.log('closed')
+    });
+
+    this.route.queryParams
+      .subscribe(params => {
+        this.ID = params['ID'] || 0;
+      });
+
+
+  }
+
+  isPurchasePriceEnabled:boolean=true;
+  isPurchasePricePSFEnabled:boolean=true;
+
+  calculate(text) {
+
+  if(text.name == 'PurchasePrice'){
+    this.formData.PurchasePricePSF = (this.formData.PurchasePrice / this.formData.InPlaceRSF) == NaN?0: (this.formData.PurchasePrice / this.formData.InPlaceRSF);
+    if(isNaN(this.formData.PurchasePricePSF))
+      this.formData.PurchasePricePSF = 0 ;
+
+  }else if(text.name == 'PurchasePricePSF'){
+    this.formData.PurchasePrice = (this.formData.PurchasePricePSF * this.formData.InPlaceRSF) == undefined? 0:(this.formData.PurchasePricePSF * this.formData.InPlaceRSF);
+  
+  }else{
+    this.formData.PurchasePricePSF = 0;
+    this.formData.PurchasePrice = 0;
+  }
+
+
+    }
+    
+  calculateStabilized(text) {
+
+    if(text.name == 'StabilizedBasis'){
+      this.formData.StabilizedBasisPSF = (this.formData.StabilizedBasis / this.formData.StabilizedRSF) == NaN?0: (this.formData.StabilizedBasis / this.formData.StabilizedRSF);
+      if(isNaN(this.formData.StabilizedBasisPSF))
+        this.formData.StabilizedBasisPSF = 0 ;
+  
+    }else if(text.name == 'StabilizedBasisPSF'){
+      this.formData.StabilizedBasis = (this.formData.StabilizedBasisPSF * this.formData.StabilizedRSF) == undefined? 0:(this.formData.StabilizedBasisPSF * this.formData.StabilizedRSF);
+    
+    }else{
+      this.formData.StabilizedBasisPSF = 0;
+      this.formData.StabilizedBasis = 0;
+    }
+  
+  
+      }
+
+  stabilizedrsf: number = null;
+  stabilizedbasis: number = null;
+  stabilizedbasispsf: number = null;
+  calculatestabilized(value) {
+    this.stabilizedbasispsf = value / this.stabilizedrsf;
+  }
+  labmrketann: number = null;
+  labmrketmon: number = null;
+
+  calculatelabmarket(value) {
+    this.formData.LabMarketRentMon = this.formData.LabMarketRentAnn / 12;
+  }
+  AfterInit() {
+    this.formData.ID = Number(this.ID);
+  }
+  selectionMarket(value:any){
+    this.getSubMarket(value);
+  }
+  getDealTypes() {
+    const query = {
+      select: 'ID, Title, Inactive,Modified, Editor/Title',
+      expand: 'Editor',
+      filter: 'Inactive eq true or Inactive eq null',
+      orderby: 'Title asc'
+    };
+
+    this.service.readItems("DealType", query).then(res => {
+      this.common.HideSpinner();
+      this.AutoCompDealType.data = res['d'].results as Dealtype[];
+      this.AutoCompDealType.resultObserve();
+
+    });
+
+  }
+  getBrokerage() {
+    const query = {
+      select: 'ID, Title, Inactive,Modified, Editor/Title',
+      expand: 'Editor',
+      filter: 'Inactive eq true or Inactive eq null',
+      orderby: 'Title asc'
+    };
+
+    this.service.readItems("Brokerage", query).then(res => {
+      this.common.HideSpinner();
+      this.AutoCompBrokerage.data = res['d'].results as Brokerage[];
+      this.AutoCompBrokerage.resultObserve();
+
+    });
+
+  }
+  getBroker() {
+    const query = {
+      select: 'ID, Title, Inactive,Modified, Editor/Title',
+      expand: 'Editor',
+      filter: 'Inactive eq true or Inactive eq null',
+      orderby: 'Title asc'
+    };
+
+    this.service.readItems("Brokers", query).then(res => {
+      this.common.HideSpinner();
+      this.AutoCompBroker.data = res['d'].results as Broker[];
+      this.AutoCompBroker.resultObserve();
+
+    });
+
+  }
+  onSubmit(form: NgForm) {
+    //BLBase function
+    var objDeal = new DealMaster();
+    objDeal.ID = this.formData.ID;
+    objDeal.Title = this.formData.Title == null ? '' : this.formData.Title;
+    objDeal.DateEntered = this.formData.DateEntered;
+    objDeal.Address = this.formData.Address == null ? '' : this.formData.Address;
+    objDeal.City = this.formData.City == null ? '' : this.formData.City;
+    objDeal.ZipCode = this.formData.ZipCode == null ? '' : this.formData.ZipCode;
+    objDeal.State = this.formData.State == null ? '' : this.formData.State;
+    objDeal.Description = this.formData.Description == null ? '' : this.formData.Description;
+    objDeal.MarketId = this.formData.MarketId == null ? '' : this.formData.MarketId;
+    objDeal.SubMarketId = this.formData.SubMarketId == null ? '' : this.formData.SubMarketId;
+    objDeal.DealTypeId = this.formData.DealTypeId == null ? '' : this.formData.DealTypeId;
+    objDeal.ProjectTypeId = this.formData.ProjectTypeId == null ? '' : this.formData.ProjectTypeId;
+    objDeal.ReportOutput =this.formData.ReportOutput;
+    
+    this.insertRecord(objDeal);
+  }
+  AfterInsert(jsonObject: any) {
+    this.ShowSpinner();
+    
+    Promise.all(
+      [
+        // this.SaveApprovers(),
+        // this.SaveInvestment(),
+      ]).then(res => {
+        this.common.HideSpinner();
+      })
+
+  }
+
+  getSubMarket(value) {
+    this.common.ShowSpinner();
+    const query = {
+      select: 'ID, Title, MarketId,Inactive,Modified, Editor/Title',
+      expand: 'Editor',
+      filter: '(Inactive eq true or Inactive eq null) and MarketId eq '+value.value,
+      orderby: 'Title asc'
+    };
+
+    this.service.readItems("SubMarket", query).then(res => {
+      this.common.HideSpinner();
+      this.AutoCompSubMarket.data = res['d'].results as SubMarket[];
+      this.AutoCompSubMarket.resultObserve();
+
+    });
+
+  }
+  getMarkets() {
+    const query = {
+      select: 'ID, Title, Inactive,Modified, Editor/Title',
+      expand: 'Editor',
+      filter: 'Inactive eq true or Inactive eq null',
+      orderby: 'Title asc'
+    };
+
+    this.service.readItems("Market", query).then(res => {
+      this.common.HideSpinner();
+      this.AutoCompMarket.data = res['d'].results as Market[];
+      this.AutoCompMarket.resultObserve();
+
+    });
+
+  }
+  getStatus() {
+    const query = {
+      select: 'ID, Title, Inactive,Modified, Editor/Title',
+      expand: 'Editor',
+      filter: 'Inactive eq true or Inactive eq null',
+      orderby: 'Title asc'
+    };
+
+    this.service.readItems("Status", query).then(res => {
+      this.common.HideSpinner();
+      this.AutoCompStatus.data = res['d'].results as Status[];
+      this.AutoCompStatus.resultObserve();
+
+    });
+
+  }
+  getProjectTypes() {
+    const query = {
+      select: 'ID, Title, Inactive,Modified, Editor/Title',
+      expand: 'Editor',
+      filter: 'Inactive eq true or Inactive eq null',
+      orderby: 'Title asc'
+    };
+
+    this.service.readItems("ProjectType", query).then(res => {
+      this.common.HideSpinner();
+      this.AutoCompProjectType.data = res['d'].results as Projecttype[];
+      this.AutoCompProjectType.resultObserve();
+
+    });
+
+  }
+  DeleteRow(index: number) {
+    this.dialog.openConfirmDialog("Are you sure you want to delete this row?").afterClosed().subscribe(res => {
+      if (res) {
+        this.repeating.splice(index, 1);
+        // this.UpdateEventDueAmountDetailLineID();
+      }
+    })
+  }
+  DeleteRowSeller(index: number) {
+    this.dialog.openConfirmDialog("Are you sure you want to delete this row?").afterClosed().subscribe(res => {
+      if (res) {
+        this.Sellerrepeating.splice(index, 1);
+        // this.UpdateEventDueAmountDetailLineID();
+      }
+    })
+  }
+  DeleteRowQuickLinks(index: number) {
+    this.dialog.openConfirmDialog("Are you sure you want to delete this row?").afterClosed().subscribe(res => {
+      if (res) {
+        this.QuickLinks.splice(index, 1);
+        // this.UpdateEventDueAmountDetailLineID();
+      }
+    })
+  }
+  BeforeFillInForm(formDealData: any) {
+    this.contactData = formDealData;
+  }
+
+
+
+
+  onNotesAdded(clientNote: any[]) {
+    //this.vendorNotesonCreate.push(clientNote);
+
+  }
+  opencontactList() {
+
+    if (this.parent == "vendorForm") {
+      this.router.navigate(['/contact/vendor/form'], { queryParams: { ID: this.ID, ViewID: this.viewID } });
+    }
+    else {
+      if (this.ID > 0)
+        this.router.navigate(['/contact/list'], { queryParams: { ID: this.ID, ViewID: this.viewID } });
+      else
+        this.router.navigate(['/contact/list'], { queryParams: { ViewID: this.viewID, parent: this.parent } });
+    }
+
+  }
+
+  openList() {
+    if (this.ID > 0)
+      this.router.navigate(['/contact/list'], { queryParams: { ID: this.ID, ViewID: this.viewID } });
+    else
+      this.router.navigate(['/contact/list'], { queryParams: { ViewID: this.viewID } });
+  }
+
+
+
+  async createEntityFolder(EntityType: string, FolderName: string) {
+    await this.service.createFolder(EntityType, FolderName).then(
+      (response: any) => {
+        if (response) {
+          console.log(response)
+        }
+      }
+      , error => {
+        console.log(error);
+        this.messageDialog.openMessageDialog("Folder is not created on share point clients library.");
+      });
+
+  }
+
+  AfterUpdate() {
+    this.opencontactList();
+  }
+
+  onReload(form: NgForm) {
+
+    this.router.navigate(['/contact/form'], { queryParams: { ID: this.primaryKey, vendorID: this.ID } })
+  }
+
+  onDelete(ID: number) {
+    this.dialog.openConfirmDialog("Are you sure you want to delete this record?").afterClosed().subscribe(res => {
+      if (res) {
+        this.deleteRecord(ID);
+      }
+    })
+  }
+
+  getDisabledValue() {
+    //your condition, in this case textarea will be disbaled.
+    return true;
+  }
+  AfterDelete() {
+    this.opencontactList();
+  }
+
+  onCreate(form: NgForm) {
+    this.router.navigate(['/contact/form/edit'], { queryParams: { vendorID: this.ID, ViewID: this.viewID, parent: this.parent } })
+  }
+
+  onEdit() {
+    //this.Edit();
+
+    this.router.navigate(['/contact/form/edit'], { queryParams: { ID: this.primaryKey, ViewID: this.viewID, vendorID: this.ID, parent: this.parent } })
+  }
+
+
+  AddRow() {
+
+    var arr_len = this.repeating.length;
+    if (arr_len >= 0) {
+      this.repeating.push(this.array);
+    }
+  }
+  QuickLinksAddRow() {
+
+    var arr_len = this.QuickLinks.length;
+    if (arr_len >= 0) {
+      this.QuickLinks.push(this.array);
+    }
+  }
+  AddSellerRow() {
+
+    var arr_len = this.Sellerrepeating.length;
+    if (arr_len >= 0) {
+      this.Sellerrepeating.push(this.Sellerarray);
+    }
+  }
+
+
+  onBack() {
+    this.router.navigate(['/home']);
+  }
+
+
+
+}

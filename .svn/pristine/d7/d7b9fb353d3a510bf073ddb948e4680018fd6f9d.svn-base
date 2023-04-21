@@ -1,0 +1,125 @@
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { CommonService } from 'src/app/Base/Common.service';
+import { SPOperationsService } from 'src/app/services/spoperations.service';
+import { SharePointConfigService } from 'src/app/Base/SharePoint/share-point-config.service';
+import { LoginUser } from 'src/app/Base/User/login-user';
+import { DealCommentsReplies } from './dealcommentsreplies.model';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { DealReplyBottomSheetComponent } from './deal-reply-bottom-sheet/deal-reply-bottom-sheet.component';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
+@Component({
+  selector: 'app-dealcommentsreplies',
+  templateUrl: './dealcommentsreplies.component.html',
+  styleUrls: ['./dealcommentsreplies.component.scss']
+})
+export class DealcommentsrepliesComponent implements OnInit, OnChanges {
+    
+  @Input() data:any;
+  @Input() replies:any = null;
+
+  @Output() onBack =  new EventEmitter<any>();
+  @Output() onBottomSheetClose =  new EventEmitter<any>();
+  imageURL: string = "";
+  
+  config: AngularEditorConfig = {
+    editable: true,
+    spellcheck: true,
+    height: '15rem',
+    minHeight: '5rem',
+    placeholder: 'Enter text here...',
+    translate: 'no',
+    defaultParagraphSeparator: 'p',
+    //defaultFontName: 'Arial',
+    defaultFontName: 'Century Gothic',
+    toolbarHiddenButtons: [
+      ['bold']
+    ],
+    customClasses: [
+      {
+        name: "quote",
+        class: "quote",
+      },
+      {
+        name: 'redText',
+        class: 'redText'
+      },
+      {
+        name: "titleText",
+        class: "titleText",
+        tag: "h1",
+      },
+    ]
+  };
+
+  isReplyMode:boolean = false;
+
+  discussionReplies:DealCommentsReplies =  new DealCommentsReplies();
+  currentUserName:string = null;
+
+  constructor(
+    public service: SPOperationsService,     
+    public common:CommonService,    
+    private _bottomSheet: MatBottomSheet,
+    public spConfigService:SharePointConfigService
+    ) {
+ 
+  }
+
+  ngOnInit(): void {
+    this.currentUserName = LoginUser.loggedinUser.UserName;
+    this.getPersonImage();
+  }
+
+  getPersonImage() {
+    this.spConfigService.getRecordByTitleAsync("PersonImage").then(res=>{
+      this.imageURL += res[0].ListUrl;
+    });            
+  }
+
+  ngOnChanges(changes: any): void {
+    //this.fillList();
+  }
+
+  ngAfterViewInit() {
+    //this.fillList();
+  }
+
+  openBottomReplySheet(row, isReplyAll:boolean): void {          
+      this._bottomSheet.open(DealReplyBottomSheetComponent,
+        {
+          disableClose: false,
+          panelClass: 'bottomSheetHeight',
+          autoFocus:true,
+          data: { data: row, isReplyAll:isReplyAll}
+        }
+      );
+
+      this._bottomSheet._openedBottomSheetRef.afterDismissed().subscribe(res=>{
+        this.afterBottomSheetCloses();
+      })    
+  }
+
+  afterBottomSheetCloses(){
+    this.onBottomSheetClose.emit(this.data);
+  }
+
+  
+  onReply(){
+    this.isReplyMode = true;
+    
+  }
+
+  onReplyCancel(){
+    this.isReplyMode=false;
+    this.discussionReplies= new DealCommentsReplies();
+  }
+
+  onBackClick(){
+    this.onBack.emit();
+  }
+
+
+
+ 
+
+}

@@ -1,0 +1,139 @@
+<div class="row">
+
+   <!--Grid column-->
+   <div class="col-lg-12 col-md-12">
+     <!--Card-->
+     <mdb-card cascade="true" narrower="true">
+       <!--Card image-->
+       <div
+         class="view view-cascade gradient-card-header blue-gradient narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
+         <h4 class="h4-responsive">Deal Tracking Report</h4>
+         <div>
+           <div class="btn-group" role="group" aria-label="Basic example">                                       
+             <a (click)="frame.show()" mdbBtn    
+                gradient="aqua" size="sm" data-toggle="modal" data-target="#basicExample"  mdbWavesEffect> 
+               <mdb-icon fas icon="filter" class="mr-1"></mdb-icon> Filter
+             </a>
+           </div>      
+         </div>
+       </div>
+       <!--/Card image-->
+ 
+       <!--Card content-->
+       <mdb-card-body style="height:1200px"  cascade="true">
+ <div class="row">
+  <div class="col-sm-12">
+    <mat-form-field class="example-full-width">
+       <mat-label>Foot Notes:</mat-label>
+       <input matInput class="MatInputBoxShadow" type="text" id="Fund" name="Fund"
+          >
+          </mat-form-field>
+ </div> </div>
+ 
+         <div class="row">                              
+           <div class="col-md-12 text-right ">                    
+             <div id="reportViewer">
+             </div>
+           </div>
+         </div>
+         
+       </mdb-card-body>
+       <!--/.Card content-->
+     </mdb-card>
+     <!--/.Card-->
+   </div>
+   <!--Grid column-->
+ </div>
+
+ <div style="overflow-y: auto" mdbModal #frame="mdbModal" class="modal fade right" id="frameModalTop" tabindex="-1"
+ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" [config]="{backdrop: true}">
+ <div class="modal-dialog modal-full-height modal-right modal-notify modal-info" role="document">
+   <div class="modal-content">
+     <!--Header-->
+     <div class="modal-header">
+       <p class="heading lead">Filter
+       </p>
+
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="frame.hide()">
+         <span aria-hidden="true" class="white-text">×</span>
+       </button>
+     </div>
+
+     <div class="modal-body">
+
+       <div class="text-left">
+
+
+       <div class="md-form" style="margin-top: 1rem !important;">
+
+      </div>
+      <div class="md-form" style="margin-top: 1rem !important;">
+
+      </div>
+         <div class="md-form" style="margin-top: 1rem !important;">
+           <mat-form-field class="example-full-width">
+             <mat-label>Year</mat-label>
+             <mat-select label="Accrual" type="text" name="Year">
+               <mat-option>-- Clear --</mat-option>
+               <mat-option [value]="true">2021</mat-option>
+               <mat-option [value]="false">2020</mat-option>
+               <mat-option [value]="false">2019</mat-option>
+               <mat-option [value]="false">2018</mat-option>
+               <mat-option [value]="false">2017</mat-option>
+               <mat-option [value]="false">2016</mat-option>
+
+             </mat-select>
+           </mat-form-field>
+         </div>
+
+
+         <div class="md-form" style="margin-top: 1rem !important;">
+           <mat-form-field class="example-full-width">
+             <mat-label>Market</mat-label>
+             <mat-select label="Accrual" type="text" name="Type">
+               <mat-option>-- Clear --</mat-option>
+               <mat-option [value]="true">Boston</mat-option>
+               <mat-option [value]="false">Sandiego</mat-option>
+
+             </mat-select>
+           </mat-form-field>
+         </div>
+
+         <div class="md-form" style="margin-top: 1rem !important;">
+           <mat-form-field class="example-full-width">
+             <mat-label>Deal Type</mat-label>
+             <mat-select label="Accrual" type="text" name="DealType">
+               <mat-option>-- Clear --</mat-option>
+               <mat-option [value]="true">In-Market / Active</mat-option>
+               <mat-option [value]="false">Strategic / Off Market</mat-option>
+
+             </mat-select>
+           </mat-form-field>
+         </div>
+
+
+
+
+         <div class="row" style="margin-top: 1rem !important;">
+           <div class="col-md-6">
+             <button class="w-100 modalFiltersButton" mdbBtn color="info" size="md"   type="button"
+               (click)="onFilterClick(frame)" mdbWavesEffect>
+               <mdb-icon fas icon="filter" class="mr-1"></mdb-icon> Apply Filter
+             </button>
+           </div>
+           <div class="col-md-6">
+             <button class="w-100 modalFiltersButton" mdbBtn color="info" size="md" type="button"
+               (click)="onFilterClear(frame)" mdbWavesEffect outline="true">
+               <mdb-icon fas icon="minus" class="mr-1"></mdb-icon> Clear Filter
+             </button>
+           </div>
+         </div>
+
+
+       </div>
+
+     </div>
+
+   </div>
+ </div>
+</div>

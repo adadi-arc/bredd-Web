@@ -1,0 +1,17 @@
+
+export class DealMaster {
+    ID:number = 0;
+    Title:string= null;
+    DateEntered:string = null;
+    Address:string=null;
+    City:string=null;
+    ZipCode:string=null;
+    State:string=null;
+    Description:string=null;
+    MarketId :string = null;
+    SubMarketId:string = null;
+    ProjectTypeId:string=null;
+    DealTypeId:string= null;
+    ReportOutput: boolean= true;
+}
+

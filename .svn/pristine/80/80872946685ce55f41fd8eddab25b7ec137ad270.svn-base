@@ -1,0 +1,431 @@
+import { Subject } from 'rxjs';
+import { ToastType } from 'src/app/Enum/ToastType';
+import { Autocomplete } from 'src/app/Base/Autocomplete'
+
+import { Component, ViewChild, TemplateRef, OnInit, HostListener, Input, AfterViewInit , Output, EventEmitter, OnChanges} from '@angular/core';
+import { GenericService } from 'src/app/services/generic.service';
+import { GeneralService } from 'src/app/services/general.service';
+import { CalendarEvent, CalendarEventAction, CalendarDateFormatter, CalendarEventTimesChangedEvent, CalendarView, CalendarMonthViewBeforeRenderEvent } from 'angular-calendar';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormControl } from '@angular/forms';
+
+import { BLBase } from 'src/app/Base/BLBase/BLBase.component';
+import { NgxSpinnerService } from "ngx-spinner";
+import { ToastService, MDBModalService, MDBModalRef, ModalDirective } from 'ng-uikit-pro-standard';
+import { ConfirmDialogeService } from 'src/app/confirm-dialoge/confirm-dialoge.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { NgForm } from '@angular/forms';
+//import { CustomDateFormatter } from 'src/app/calen  /custom-date-formatter.provider';
+import { CustomDateFormatter } from 'src/app/canlendar-avail/custom-date-formatter.provider';
+import{ KeyUpcomingDates } from 'src/app/modules/deal/keyupcomingdates.model';
+import {
+  startOfDay,
+  endOfDay,
+  subDays,
+  addDays,
+  endOfMonth,
+  isSameDay,
+  isSameMonth,
+  addHours,
+} from 'date-fns';
+
+// For Date Picker month
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+
+
+import { MatDatepicker } from '@angular/material/datepicker';
+import * as _moment from 'moment';
+import { default as _rollupMoment, Moment } from 'moment';
+
+import { DateTime } from 'luxon';
+import { CommonService } from 'src/app/Base/Common.service';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { SPOperationsService } from 'src/app/services/spoperations.service';
+
+import { takeUntil, take } from 'rxjs/operators';
+import { DealMaster } from 'src/app/modules/deal/dealmaster.model';
+
+const moment = _rollupMoment || _moment;
+
+// See the Moment.js docs for the meaning of these formats:
+// https://momentjs.com/docs/#/displaying/format/
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'MM/YYYY',
+  },
+  display: {
+    dateInput: 'MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
+
+
+const colors: any = {};
+colors['blue'] = {
+  primary: '#33b5e5',
+  secondary: '#D1E8FF',
+}
+
+colors['black'] = {
+  primary: 'black',
+  secondary: 'black',
+}
+@Component({
+  selector: 'app-my-calendar',
+  templateUrl: './my-calendar.component.html',
+  styleUrls: ['./my-calendar.component.scss'],
+  providers: [
+    // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
+    // application's root module. We provide it at the component level here, due to limitations of
+    // our example generation script.
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    {
+      provide: CalendarDateFormatter,
+      useClass: CustomDateFormatter,
+    },
+  ],
+})
+export class MyCalendarComponent implements OnInit,OnChanges {
+  @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
+  
+  
+
+
+  public modalRef: MDBModalRef;
+  date = new FormControl(moment());
+  view: CalendarView = CalendarView.Month;
+  CalendarView = CalendarView;
+  viewDate: Date = new Date();
+  clickedDate: Date;
+  clickedColumn: number;
+  refresh: Subject<any> = new Subject();
+  activeDayIsOpen: boolean = true;
+
+  FilterDate: Date = new Date();
+
+  protected _onDestroy = new Subject<void>();
+
+  modalData: {
+    action: string;
+    event: CalendarEvent;
+  };
+
+  actions: CalendarEventAction[] = [
+    {
+      label: '<i class="fas fa-fw fa-pencil-alt"></i>',
+      a11yLabel: 'Edit',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.handleEvent('Edited', event);
+      },
+    },
+    {
+      label: '<i class="fas fa-fw fa-trash-alt"></i>',
+      a11yLabel: 'Delete',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.events = this.events.filter((iEvent) => iEvent !== event);
+        this.handleEvent('Deleted', event);
+      },
+    },
+  ];
+  events: CalendarEvent[];
+  Allevents: CalendarEvent[];
+
+  eventsToolTip:[]=[];
+    @Input() selectedStatus :any = null;
+
+  constructor(
+    private modal: NgbModal,
+    public sp: SPOperationsService,
+    public modalService: MDBModalService,
+    public genService: GeneralService,
+    public spinner: NgxSpinnerService,
+    public toast: ToastService,
+    public service: SPOperationsService,
+    public dialog: ConfirmDialogeService,
+    public router: Router,
+    public route: ActivatedRoute,
+    public common: CommonService,
+
+    // public venueMonthCivic : VenueMonthNotesClass
+  ) {
+  }
+
+  addNewItem(value: string) {
+    //this.newItemEvent.emit(value);
+  }
+
+
+  ngOnChanges(changes: any): void {
+
+    this.viewDate = new Date();
+    this.GenerateCalendarData(this.viewDate);
+    
+  }
+
+  onEdit(gen: DealMaster) {
+    if (gen != undefined)
+      this.router.navigate(['/portal/deals/main'], {
+        queryParams: {
+          dealID: gen
+        }
+      })
+  }
+
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
+
+  ngAfterViewInit() {
+
+  }
+
+  beforeMonthViewRender(renderEvent: CalendarMonthViewBeforeRenderEvent): void {
+    renderEvent.body.forEach((day) => {
+      const dayOfMonth = day.date.getDate();
+      if (dayOfMonth > 5 && dayOfMonth < 10 && day.inMonth) {
+        //day.cssClass = 'bg-pink';
+      }
+    });
+  }
+
+ 
+
+
+  ngOnInit(): void {
+
+
+
+      this.viewDate = new Date();
+
+      this.refresh = new Subject();
+      this.objKeyUpcomingDates = new KeyUpcomingDates();
+    
+    this.GenerateCalendarData(this.viewDate);
+
+
+
+  }
+
+
+  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+    if (isSameMonth(date, this.viewDate)) {
+      if (
+        (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
+        events.length === 0
+      ) {
+        this.activeDayIsOpen = false;
+      } else {
+        this.activeDayIsOpen = true;
+      }
+      this.viewDate = date;
+ 
+    }
+  }
+
+
+  eventTimesChanged({
+    event,
+    newStart,
+    newEnd,
+  }: CalendarEventTimesChangedEvent): void {
+    this.events = this.events.map((iEvent) => {
+      if (iEvent === event) {
+        return {
+          ...event,
+          start: newStart,
+          end: newEnd,
+        };
+      }
+      return iEvent;
+    });
+    this.handleEvent('Dropped or resized', event);
+  }
+
+  handleEvent(action: string, event: CalendarEvent): void {
+    this.modalData = { event, action };
+    this.modal.open(this.modalContent, { size: 'lg' });
+  }
+
+  addEvent(): void {
+    this.events = [
+      ...this.events,
+      {
+        title: 'New event',
+        start: startOfDay(new Date()),
+        end: endOfDay(new Date()),
+        color: colors.red,
+        draggable: true,
+        resizable: {
+          beforeStart: true,
+          afterEnd: true,
+        }
+      },
+    ];
+  }
+
+  
+
+  setView(view: CalendarView) {
+    this.view = view;
+  }
+
+  closeOpenMonthViewDay(ChangedDate: any) {
+    this.activeDayIsOpen = false;
+
+    this.GenerateCalendarData(ChangedDate);
+    
+  }
+
+  dayEvent(action: string, event: CalendarEvent): void {
+    this.modalData = { event, action };
+    this.modal.open(this.modalContent, { size: 'lg' });
+  }
+
+ 
+
+  chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
+    const ctrlValue = this.date.value;
+    ctrlValue.year(normalizedYear.year());
+    this.date.setValue(ctrlValue);
+    datepicker.close();
+
+  }
+
+  chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+    const ctrlValue = this.date.value;
+    ctrlValue.month(normalizedMonth.month());
+    ctrlValue.year(normalizedMonth.year());
+    this.date.setValue(ctrlValue);
+    datepicker.close();
+
+    this.viewDate = new Date(this.date.value);
+
+    this.GenerateCalendarData(this.viewDate);
+    
+  }
+
+
+  objKeyUpcomingDates: KeyUpcomingDates;
+  GenerateCalendarData(TodayDate: Date) {
+
+    var startDate = moment(TodayDate).startOf('month').format("MM-DD-YYYY");
+    var endDate = moment(TodayDate).endOf('month').format("MM-DD-YYYY");
+
+    const query = {
+      select: 'DealId,Deal/ID, Deal/Title,Title, ID, KeyUpcomingDate',
+      //filter: 'DealId eq ' + this.primaryKey,
+      expand: 'Deal',
+      orderby: 'ID desc'
+    };
+    this.service.readItems("KeyUpcomingDates", query).then(res => {
+      var KeyUpcomingDates = res['d'].results;
+      this.events =this.createCalendarEventData(KeyUpcomingDates);
+      this.refresh = new Subject();
+    });
+    // var allSelectedVenueID = "";
+    // for (let index = 0; index < this.VenueID.length; index++) {
+    //   const element = this.VenueID[index];
+    //   allSelectedVenueID += element.toString();/
+    //   if (index < this.VenueID.length - 1)
+    //     allSelectedVenueID += ","
+    // }
+    
+   /* 
+
+    this.genService.GetConfigDataWithQuery("SP_GetAvails '" + startDate + "', '" + endDate + "', '"+this.selectedChipVenueID+"'" ).then(res => {
+      var calendarData = res['value'] as [];
+        this.events = this.createCalendarEventData(calendarData);
+        this.Allevents = [...this.events];
+        //this.getDataByChip(this.selectedChipVenueName, this.selectedChipEventStatus);
+
+        this.refresh = new Subject();
+        this.HideSpinner();
+
+        this.common.HideSpinner();
+    });
+
+    this.genService.GetConfigDataWithQuery("sp_GetAvails_Events '" + startDate + "', '" + endDate + "', '"+this.selectedChipVenueID+"'" ).then(res => {
+      this.eventsToolTip = res['value'] as [];            
+    });*/
+
+  }
+
+  createCalendarEventData(data: []): CalendarEvent[] {
+
+    var eventarray: CalendarEvent[] = [];
+
+    data.forEach(element => {
+      eventarray.push(
+        {
+          id: element['ID'],
+          start: this.common.ConvertStringToHhMm(element['KeyUpcomingDate'], '08:00'),
+          end: this.common.ConvertStringToHhMm(element['KeyUpcomingDate'], '23:59'),
+          title: element['Deal'],
+          color: colors.blue,
+          //color: element['EventStatus'] == null ? colors.blue : element['IsSecured'] == true ? colors.black : colors[element['Color']],
+          //actions: this.actions,
+          //allDay: true,
+          // resizable: {
+          //   beforeStart: true,
+          //   afterEnd: true,
+          // },
+          meta: {
+            ToolTipDate: element['KeyUpcomingDate'],
+            DealName: element['Deal'],      
+          }        
+        })
+
+    });
+
+  
+
+    return eventarray;
+  }
+
+
+
+  
+
+  filterCalendar(type: string, event: MatDatepickerInputEvent<Date>) {
+    this.viewDate = new Date(event.value);
+
+    //this.refresh = new Subject();
+    this.GenerateCalendarData(this.viewDate);
+    
+
+  }
+
+   
+  allVenueSelected = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+}
+

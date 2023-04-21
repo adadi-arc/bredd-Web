@@ -1,0 +1,77 @@
+<div class="mat-elevation-z8 p-4 padding-replies">
+
+
+
+    <div class="row" >
+        <div class="reply-header">
+            <span style="color: #6c859c;font-weight: 700; font-size: 14px; margin-bottom: 15px">
+                <!-- <mat-icon class="mr-1" style="font-size: 24px;">subject</mat-icon> -->
+
+                <div class="col-md-12 pl-2 pt-2 createdBy-area">
+                    <mat-icon class="mr-1 audit-icon" >person</mat-icon>
+                    <p>{{data?.Editor?.Title}} </p>
+                    <mat-icon class="mr-1 ml-4 audit-icon" >event</mat-icon>
+                    <p> {{data?.Created | date:'MM/dd/yyyy hh:mm aa'}} </p>
+                </div>
+
+                <span class="question">{{data?.Title}}</span>
+
+            </span>
+
+            <div class="mr-4">
+                <button *ngIf="common.checkRole('AC')" class="matIconButtonsCustom-this mr-1" mat-button matTooltip="Reply All" (click)="openBottomReplySheet(data,true,'Add')">
+                    <mat-icon >reply</mat-icon> Reply All
+                </button>
+                <button *ngIf="common.checkRole('AC')" class="matIconButtonsCustom-this mr-1" mat-button matTooltip="Reply" (click)="openBottomReplySheet(data,false,'Add')">
+                    <mat-icon>reply</mat-icon> Reply
+                </button>
+                <button class="matIconButtonsCustom-this" mat-button matTooltip="Back" (click)="onBackClick()">
+                    <mat-icon >chevron_left</mat-icon> Back
+                </button>
+            </div>
+
+        </div>
+        <div style="height:1000px; overflow: auto;"  class="w-100">
+            <div *ngFor="let r of replies; let index = index" class="w-100" >
+
+                <div class="reply-detail">
+                    <div class="col-md-12">
+                        <div class="audit">
+                            <p class="d-flex DatePosition">
+                                <button mat-button type="button" class="flat-Icon-Color"  matTooltip="Edit"
+                                *ngIf="common.checkRole('A')"
+                         (click)="onEdit(r)">
+                        <mat-icon>edit</mat-icon>
+                        </button>
+
+                                <button mat-button type="button" class="flat-Icon-Color"  matTooltip="Delete"
+                        *ngIf="common.checkRole('A')"
+                         (click)="DeleteNote(r, index)">
+                        <mat-icon>delete</mat-icon>
+                        </button>
+                        </p>
+                            <p class="d-flex recipient">
+                                <img [src]="imageURL" class="rounded-circle" style="width:50px">
+                                <span style="margin-top: 1%;">{{r.Editor?.Title}}     </span>
+                        </p>
+                            <p class="d-flex DatePosition">
+                                <mat-icon class="shadow-Icon-Color mr-3">schedule</mat-icon>  Posted: {{r.Created | date: 'MM/dd/yyyy hh:mm aa'}}</p>
+                            <p class="d-flex recipient">
+                                    <mat-icon class="shadow-Icon-Color mr-3">groups</mat-icon>
+                                    <span>Recipients: </span>
+                                    <span  *ngFor="let rec of r.Receipents?.results; let index = index">  {{rec?.Title}}{{ index  == r.Receipents?.results.length - 1 ? '':', '}} </span>
+                            </p>
+                        </div>
+                        <hr>
+                        <p style="color:black" [innerHTML]="r.Reply"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+

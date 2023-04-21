@@ -1,0 +1,226 @@
+import { Component, OnInit, Input, ViewChild, AfterViewInit, Output, EventEmitter, OnChanges } from '@angular/core';
+import { SPOperationsService } from 'src/app/services/spoperations.service';
+import { CommonService } from 'src/app/Base/Common.service';
+import {FlatTreeControl} from '@angular/cdk/tree';
+import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
+import { MessageDialogeService } from 'src/app/message-dialoge/message-dialoge.service';
+//import { ClientNotesAttachmentComponent } from 'src/app/modules/bpa/client-notes-attachment/client-notes-attachment.component';
+import { TabsetComponent, MDBModalRef, MDBModalService } from 'ng-uikit-pro-standard';
+
+@Component({
+  selector: 'app-bpa-exhibits',
+  templateUrl: './bpa-exhibits.component.html',
+  styleUrls: ['./bpa-exhibits.component.scss']
+})
+
+
+
+export class BpaExhibitsComponent implements OnInit, AfterViewInit, OnChanges{
+ 
+  @ViewChild('staticTabs', { static: true }) staticTabs: TabsetComponent;
+
+  DocumentsFolder: Node[] = [];
+  Documents: any[] = [];
+  
+  @Input() BPAMasterID: number = null;
+  @Input() mode: string = null;
+  displayedColumns: string[] = ['name', 'ModifiedBy','Modified'];
+  @Output() addAttachmentEvent = new EventEmitter<any[]>();
+
+  public modalRef: MDBModalRef;
+  
+  private _transformer = (node: Node, level: number) => {
+    return {
+      expandable: !!node.children && node.children.length > 0,
+      name: node.name,
+      level: level,
+    };
+  }
+
+  treeControl = new FlatTreeControl<any>( node => node.level, node => node.expandable);
+  treeFlattener = new MatTreeFlattener( this._transformer, node => node.level, node => node.expandable, node => node.children);
+  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
+  constructor(
+    public spService:SPOperationsService,
+    public common: CommonService,
+    public messageDialog: MessageDialogeService,
+    public modalService: MDBModalService,
+  ) { 
+
+    //this.dataSource.data = TREE_DATA;
+  }
+
+  hasChild = (_: number, node: Node) => node.expandable;
+
+  ngOnInit(): void {
+    
+    console.log("BPA ID: " + this.BPAMasterID )
+    
+
+     
+      
+  }
+
+  ngAfterViewInit(): void{
+    // if(this.BPAMasterID > 0)
+    //   this.getDocumentFolders();   
+  }
+
+  ngOnChanges(): void {
+    // if(this.BPAMasterID > 0)
+    //   this.getDocumentFolders();
+  }
+
+
+  isInProgress: boolean = false;
+
+  async getDocumentFolders() {
+/*
+    var seconds = 0;
+
+    if (this.mode == "add")
+      seconds = 8000;
+    else
+      seconds = 2000;
+
+
+    this.isInProgress = true;
+    setTimeout(async () => {
+
+      const FolderName = "BPA ID - " + this.BPAMasterID;
+      const allChildFolders: any = await this.spService.getFoldersLibrary("BPA Exhibits", FolderName).catch(error => {
+        this.messageDialog.openMessageDialog("Document Folder not found for BPA ID " + this.BPAMasterID);
+      });
+
+      if (allChildFolders) {
+        for (let index = 0; index < allChildFolders.length; index++) {
+          const element = allChildFolders[index];
+          var node = new Node();
+          node.name = element.Name;
+          node.Modified = element.TimeLastModified;
+          this.DocumentsFolder.push(node);
+        }
+
+        this.dataSource.data = this.DocumentsFolder;
+        this.AttachedDocuments();
+       
+        setTimeout(() => {
+          this.staticTabs.setActiveTab(1);
+          this.isInProgress = false;
+        }, 2000)
+
+      }
+    }, seconds)
+*/
+  }
+
+  
+  OpenClientNotesAttachmentModal(row, folderName) {
+/*
+    var arr= [];
+    arr.push(row)
+    this.modalRef = this.modalService.show(ClientNotesAttachmentComponent, {
+      backdrop: true,
+      keyboard: true,
+      focus: true,
+      show: false,
+      ignoreBackdropClick: true,
+      class: 'modal-xl modal-content modal-dialog cascading-modal modal-top',
+      containerClass: '',
+      animated: true,
+      styles: "overflow-y: auto",     
+      data: {
+        BPAID: this.BPAMasterID,        
+        folderName: folderName,                           
+      } 
+    });
+
+    this.modalRef.content.action.subscribe((result: any) => {
+      if(this.BPAMasterID > 0)
+      {
+        this.AttachedDocuments();
+        // this.getNotesData().then(res=>{
+        //   this.fillList();
+        // });
+      }
+      else
+      {        
+        this.addAttachmentEvent.emit(result);
+      }
+        
+    })*/
+
+  }
+  
+  //Get attached documents 
+  async AttachedDocuments() {
+    
+/*
+    for (let index = 0; index < this.DocumentsFolder.length; index++) {
+      const element = this.DocumentsFolder[index];
+      const FolderName = "BPA ID - " + this.BPAMasterID + "/" + element.name;
+      const filesAndFolders: any = await this.spService.getDocumentsFromDocumentLibraryBPA("BPA Exhibits", FolderName);  //"ARC Nasir/1035-1023");
+      if (filesAndFolders && filesAndFolders.length > 0) {
+        console.log("Folders/Departments:", filesAndFolders);
+        element.Documents= [];
+        for (var i = 0; i < filesAndFolders.length; i++) {
+          let documents = filesAndFolders[i].d.results;
+          for (let j = 0; j < documents.length; j++) {
+            const document = documents[j];
+            element.Documents.push({
+              "Name": document.Name,
+              "ModifiedBy": document.ModifiedBy.Title,
+              "TimeLastModified": document.TimeLastModified,
+              "ServerRelativeUrl": location.origin + document.ServerRelativeUrl,
+              "DocumentServerRelativeUrl": document.ServerRelativeUrl
+            });
+          }
+        }
+        console.log("Departments Documents:", this.Documents);
+
+      }
+    }*/
+  }
+
+//   //Get attached documents 
+//   async AttachedDocuments() {
+//     this.Documents = [];
+
+//       const settlementFolderName = "BPA ID - " + this.BPAMasterID;
+//       const filesAndFolders: any = await this.spService.getDocumentsFromDocumentLibrary("BPA Exhibits", settlementFolderName);  //"ARC Nasir/1035-1023");
+//       if (filesAndFolders && filesAndFolders.length > 0) {
+//         console.log("Folders/Departments:", filesAndFolders);
+//         for (var i = 0; i < filesAndFolders.length; i++) {
+//           let documents = filesAndFolders[i].d.results;
+//           /*
+//           for (let j = 0; j < documents.length; j++) {
+//             const document = documents[j];
+//             this.Documents.push({
+//               "Department": document.ServerRelativeUrl.split('/')[customConfig.departmentIndex], // 5, EM1, SDT EM
+//               // "Department": document.ServerRelativeUrl.split('/')[6], //EM2
+//               "Name": document.Name,
+//               "ModifiedBy": document.ModifiedBy.Title,
+//               "TimeLastModified": document.TimeLastModified,
+//               "ServerRelativeUrl": location.origin + document.ServerRelativeUrl,
+//               "DocumentServerRelativeUrl": document.ServerRelativeUrl
+//             });
+//           }
+//           */
+//         }
+//         console.log("Departments Documents:", this.Documents);
+//       }
+    
+//   }
+
+ }
+
+export class Node {
+  name: string;
+  expandable: boolean;
+  Modified:string = '';
+  ModifiedBy:string = '';
+  level:number =1;
+  children?: Node[];
+  Documents:any[] = [];
+}

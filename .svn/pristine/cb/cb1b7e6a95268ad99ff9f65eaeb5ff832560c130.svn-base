@@ -1,0 +1,11 @@
+.mat-badge-medium.mat-badge-after .mat-badge-content {
+   // right: -28px;
+}
+
+.md-pills li {
+   padding: 0.01rem !important;
+}
+.tab-content{
+   padding-top: 1rem;
+}
+

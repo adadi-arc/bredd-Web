@@ -1,0 +1,314 @@
+<div class="row fixed-top my-1 pl-3 pr-3 stickyMenuTop">
+  <div class="btn-group" role="group" aria-label="Basic example">
+    <a class="stickyButtons elem" (click)="onBack()">
+      <button mdbBtn type="button" class="btn-sm">
+        <mdb-icon fas icon="angle-left" class="mr-1"></mdb-icon>Back
+      </button>
+    </a>
+    <a (click)="openNewDealList()" *ngIf="common.CheckIfUserhasAccess_Action('Client','Add')"   style="color: #000000;"
+      class="stickyButtons">
+      <button mdbBtn type="button" class="btn-sm">
+        <mdb-icon fas icon="plus" class="mr-1"></mdb-icon>Add
+      </button>
+    </a>
+    <a class="stickyButtons elem" (click)="frame.show()" data-target="#basicExample">
+      <button mdbBtn type="button" class="btn-sm">
+        <mdb-icon fas icon="filter" class="mr-1"></mdb-icon>Filter
+      </button>
+    </a>
+    <mat-menu #menu="matMenu" yPosition="below">
+      <a target="_blank"
+        href="http://bmrnews/finance/deal-tracker/_layouts/15/DocIdRedir.aspx?ID=CPS3UU4EYWFU-1059314539-4&download=1"
+        mat-menu-item *ngIf="common.CheckIfUserhasAccess_Action('Client','View')"  >
+        <mat-icon>remove_red_eye</mat-icon>
+        <span>PDF</span>
+      </a>
+      <a href="http://bmrnews/finance/deal-tracker/_layouts/15/DocIdRedir.aspx?ID=CPS3UU4EYWFU-1059314539-2&download=1"
+        mat-menu-item *ngIf="common.CheckIfUserhasAccess_Action('Client','View')"  >
+        <mat-icon>remove_red_eye</mat-icon>
+        <span>Excel</span>
+      </a>
+    </mat-menu>
+    <!-- <div>
+        <div [hidden]="parent == ''" class="btn-group" role="group" aria-label="Basic example">
+          <a (click)="onBack()" mdbBtn    
+             gradient="aqua" size="sm" data-toggle="modal" data-target="#basicExample"  mdbWavesEffect>
+            <mdb-icon fas icon="angle-left" class="mr-1"></mdb-icon> Back
+          </a>
+        </div>
+      </div>
+     -->
+  </div>
+  <form class="col-lg-4 col-md-3 col-sm-8 col-9 example-form elem">
+    <form class="form-inline md-form active-pink-2 mt-0 mb-0">
+      <mdb-icon style="color: #40a9e6;" fas icon="search" aria-hidden="true" class="mr-2"></mdb-icon>
+      <input class="form-control form-control-sm  w-75 TopMenuSearchField" [(ngModel)]="searchKey" name="searchKey"
+        type="text" placeholder="Search Deals" aria-label="Search" (keyup)="applyFilter()" mdbInput>
+      <button style="margin: 0px;" placement="left" mdbTooltip="Clear" matSuffix class="TableSearchCloseBtn" mdbBtn
+        type="button" flat="true" size="md" mdbWavesEffect *ngIf="searchKey" (click)="onSearchClick()">
+        <mdb-icon fas icon="times" aria-hidden="true"></mdb-icon>
+      </button>
+    </form>
+  </form>
+  <div class="col-lg-5 col-md-9 col-sm-12 col-xs-12 PaginatorFixed IsSmallScreen">
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 50, 100]" [pageSize]="pageSize" showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-6 col-md-12">
+    <div (click)="onChipViewClick('L')" class="chip" [ngClass]="{'selectedView':selectedChipViewName == 'L' }">
+      <mdb-icon fas icon="th-list"></mdb-icon>
+      List View
+    </div>
+    <div (click)="onChipViewClick('G')" class="chip" [ngClass]="{'selectedView':selectedChipViewName == 'G' }">
+      <mdb-icon fas icon="globe-europe"></mdb-icon>
+      Map View
+    </div>
+    <div (click)="onChipViewClick('C')" class="chip" [ngClass]="{'selectedView':selectedChipViewName == 'C' }">
+      <mdb-icon fas icon="calendar-alt"></mdb-icon>
+      Key Upcoming Date(s) Calendar View
+    </div>
+  </div>
+  <div class="col-lg-6 col-md-12" style="text-align: right;" *ngIf="selectedChipViewName == 'L'">
+    <div (click)="onChipStatusClick('Status')" class="chip" [ngClass]="{'selectedChip':selectedChipStatusName == 'Status' }">
+      <div class="chipArea" style="border: solid;border-width: 1px;border-color: #d1dee3;text-align:center;">
+        S
+      </div> By Status
+    </div>
+    <div (click)="onChipStatusClick('Market')" class="chip" [ngClass]="{'selectedChip':selectedChipStatusName == 'Market' }">
+      <div class="chipArea" style="border: solid;border-width: 1px;border-color: #d1dee3;text-align:center;">
+        M
+      </div> By Market
+    </div>
+    <div (click)="onChipStatusClick('DealType')" class="chip" [ngClass]="{'selectedChip':selectedChipStatusName == 'DealType' }">
+      <div class="chipArea" style="border: solid;border-width: 1px;border-color: #d1dee3;text-align:center;">
+        T
+      </div> By Deal Type
+    </div>
+  </div>
+</div>
+<div style="overflow-y: auto" mdbModal #frame="mdbModal" class="modal fade right" id="frameModalTop" tabindex="-1"
+  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" [config]="{backdrop: true}">
+  <div class="modal-dialog modal-full-height modal-right modal-notify modal-info" role="document">
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead">Filter
+        </p>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="frame.hide()">
+          <span aria-hidden="true" class="white-text">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="text-left">
+          <div class="md-form" style="margin-top: 1rem !important;">
+            <mat-form-field class="example-full-width">
+              <mat-label>Year</mat-label>
+              <mat-select label="Accrual" type="text" name="Year">
+                <mat-option>-- Clear --</mat-option>
+                <mat-option [value]="true">2021</mat-option>
+                <mat-option [value]="false">2020</mat-option>
+                <mat-option [value]="false">2019</mat-option>
+                <mat-option [value]="false">2018</mat-option>
+                <mat-option [value]="false">2017</mat-option>
+                <mat-option [value]="false">2016</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="md-form" style="margin-top: 1rem !important;">
+            <mat-form-field class="example-full-width">
+              <mat-label>Status</mat-label>
+              <mat-select label="Accrual" type="text" name="Type">
+                <mat-option>-- Clear --</mat-option>
+                <mat-option [value]="true">Active - Underwriting / LOI</mat-option>
+                <mat-option [value]="false">Active - Development BPA / Capital Request</mat-option>
+                <mat-option [value]="false">Active - Reviewing / Early Stage </mat-option>
+                <mat-option [value]="false">Active-Pass</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="md-form" style="margin-top: 1rem !important;">
+            <mat-form-field class="example-full-width">
+              <mat-label>Market</mat-label>
+              <mat-select label="Accrual" type="text" name="Type">
+                <mat-option>-- Clear --</mat-option>
+                <mat-option [value]="true">Boston</mat-option>
+                <mat-option [value]="false">Sandiego</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="md-form" style="margin-top: 1rem !important;">
+            <mat-form-field class="example-full-width">
+              <mat-label>Type</mat-label>
+              <mat-select label="Accrual" type="text" name="Type">
+                <mat-option>-- Clear --</mat-option>
+                <mat-option [value]="true">Redev/Convert</mat-option>
+                <mat-option [value]="false">Development</mat-option>
+                <mat-option [value]="false">Conversion</mat-option>
+                <mat-option [value]="false">RFP</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="md-form" style="margin-top: 1rem !important;">
+            <mat-form-field class="example-full-width">
+              <mat-label>Deal Type</mat-label>
+              <mat-select label="Accrual" type="text" name="DealType">
+                <mat-option>-- Clear --</mat-option>
+                <mat-option [value]="true">In-Market / Active</mat-option>
+                <mat-option [value]="false">Strategic / Off Market</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="row" style="margin-top: 1rem !important;">
+            <div class="col-md-6">
+              <button class="w-100 modalFiltersButton" mdbBtn color="info" size="md"   type="button"
+                (click)="onFilterClick(frame)" mdbWavesEffect>
+                <mdb-icon fas icon="filter" class="mr-1"></mdb-icon> Apply Filter
+              </button>
+            </div>
+            <div class="col-md-6">
+              <button class="w-100 modalFiltersButton" mdbBtn color="info" size="md" type="button"
+                (click)="onFilterClear(frame)" mdbWavesEffect outline="true">
+                <mdb-icon fas icon="minus" class="mr-1"></mdb-icon> Clear Filter
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row py-4">
+  <!--Grid column-->
+  <div class="col-lg-12 col-md-12">
+    <!--Card-->
+    <mdb-card cascade="true" [hidden]="ListView" narrower="true">
+      <!--Card image-->
+      <div
+        class="view view-cascade gradient-card-header blue-gradient narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
+        <h4 class="h4-responsive">{{headingName}} Dashboard</h4>
+      </div>
+      <!--/Card image-->
+      <!--Card content-->
+      <mdb-card-body cascade="true">
+        <div class="col-md-12 col-sm-12 col-xs-12 IsBigScreen justify-content-center">
+          <mat-paginator (page)="syncPrimaryPaginator($event)" [pageSize]="paginator.pageSize"
+            [pageIndex]="paginator.pageIndex" [length]="paginator.length" [pageSizeOptions]="paginator.pageSizeOptions"
+            showFirstLastButtons></mat-paginator>
+          <br>
+        </div>
+        <div class="=row">
+          <div class="mat-elevation-z8 table-responsive difftab">
+            <mat-table [dataSource]="listData" matSort>
+              <ng-container matColumnDef="Title">
+                <mat-header-cell *matHeaderCellDef>Deal</mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="Title">
+                  <a style="text-decoration: underline" (click)="onEdit(element)"
+                    [ngClass]="{ 'highlight': element.isGroup == true }">
+                    {{element.Title}}
+                  </a>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Market">
+                <mat-header-cell [hidden]="selectedChipStatusName == 'Market'" *matHeaderCellDef>Market</mat-header-cell>
+                <mat-cell [hidden]="selectedChipStatusName == 'Market'" *matCellDef="let element" data-label="Market">
+                  {{element.Market}}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="SubMarket">
+                <mat-header-cell *matHeaderCellDef>Sub Market</mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="SubMarket">{{element.SubMarket}}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="Status">
+                <mat-header-cell *matHeaderCellDef [hidden]="selectedChipStatusName == 'Status'">Status</mat-header-cell>
+                <mat-cell [hidden]="selectedChipStatusName == 'Status'" *matCellDef="let element" data-label="Status">
+                  {{element.Status}}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="SF">
+                <mat-header-cell *matHeaderCellDef>SF</mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="SF">{{element.SF | number}}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="DealType">
+                <mat-header-cell *matHeaderCellDef>Deal Type</mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="DealType">{{element.DealType}}</mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+              <!-- <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':listData!=null}" ></mat-footer-row>
+                      <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':!(listData!=null && listData.data.length==0)}" ></mat-footer-row> -->
+              <!-- <mat-footer-row *matFooterRowDef="['noSearchMatch']" [ngClass]="{'hide':!(listData!=null && listData.filteredData.length==0)}" ></mat-footer-row> -->
+            </mat-table>
+            <!-- <mat-paginator [pageSizeOptions]="[5, 10, 25, 50, 100]" [pageSize]="pageSize" showFirstLastButtons></mat-paginator> -->
+          </div>
+          <h6 class="text-center pt-4" [ngClass]="{'hide':listData!=null}">
+            Loading...
+            <div class="spinner-grow ml-2" role="status">
+              <span class="sr-only float-right">Loading...</span>
+            </div>
+          </h6>
+          <h6 class="text-center pt-4" [ngClass]="{'hide':!(listData!=null && listData.data.length==0)}">
+            No Data
+          </h6>
+        </div>
+      </mdb-card-body>
+      <!--/.Card content-->
+    </mdb-card>
+    <mdb-card cascade="true" [hidden]="CalendarViewChip" narrower="true">
+      <div class="row">
+        <div class="col-md-10">
+        </div>
+        <div class="col-md-2">
+          <button mdbBtn type="button" color="success" mdbWavesEffect>Excel</button>
+          <button mdbBtn type="button" color="info" mdbWavesEffect>PDF</button>
+        </div>
+      </div>
+      <!-- http://bmrnews/finance/deal-tracker/Documents/calendar.PNG -->
+      <img src="" width="100%" height="600">
+    </mdb-card>
+    <mdb-card class="card-height text-white m-2" [hidden]="GraphView">
+      <mdb-card-header class="light-blue-skin navbar">
+        <h5 class="h5-responsive">Location</h5>
+      </mdb-card-header>
+      <mdb-card-body>
+        <mdb-card-text>
+          <!-- <agm-map #gm [zoom]="4" [latitude]="latitude" [longitude]="longitude" style="height: 700px">
+            <agm-marker (mouseOver)="onMouseHover(infoWindow,gm,marker)" *ngFor="let marker of markers"
+              [latitude]="marker.latitude"
+              [iconUrl]="{ url: marker.Color , scaledSize: { width: 45, height: 45}, labelOrigin:{x:12,y:27}}"
+              [longitude]="marker.longitude">
+              <agm-info-window [disableAutoPan]="false" #infoWindow id="infoWindow">
+                <mdb-card>
+                  <mdb-card-body>
+                    <mdb-card-title>
+                      <p style="color: #7e7ede;font-size:19px;font-weight: 800;"> <a
+                          (click)="navigate(marker.Title)">{{marker.Title}} </a></p>
+                    </mdb-card-title>
+                    <mdb-card-text>
+                      <p class="noMargin" style="width: inherit; white-space: nowrap; text-overflow: ellipsis;"> {{ marker.Address }} </p>
+                      <div class="d-flex flex-column">
+                        <ul class="list-group list-group-flush">
+                          <li class="list-group-item" style="padding: 0.75rem 0.5rem;">
+                            {{ marker.Status.Title}}
+                          </li>
+                          <li class="list-group-item" style="padding: 0.75rem 0.5rem;">
+                            {{ marker.SF}}
+                          </li>
+                          <li class="list-group-item" style="padding: 0.75rem 0.5rem;">
+                            {{ marker.DealType.Title}}
+                          </li>
+                        </ul>
+                      </div>
+                    </mdb-card-text>
+                  </mdb-card-body>
+                </mdb-card>
+              </agm-info-window>
+            </agm-marker>
+          </agm-map> -->
+        </mdb-card-text>
+      </mdb-card-body>
+    </mdb-card>
+    <!--/.Card-->
+  </div>
+  <!--Grid column-->
+</div>
